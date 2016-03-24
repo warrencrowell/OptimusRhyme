@@ -1,0 +1,8 @@
+{
+  "name": "Optimus Rhyme",
+  "description": "A rhyme-based rap analysis as well as rap generator.",
+  "image": "heroku/python",
+  "repository": "https://github.com/warrencrowell/cs4300sp2016-OptimusRhyme",
+  "keywords": ["python", "django" ],
+  "addons": [ "heroku-postgresql" ]
+}
