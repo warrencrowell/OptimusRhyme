@@ -1,9 +1,9 @@
-import sklearn, re, nltk
+import sklearn, re, nltk, base64, json, urllib2
 import numpy as np
-from twitter import *
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 MIN_RESULTS = 30 # Minimum number of results needed for valid user input
+BASE_SEARCH_URL = "https://api.twitter.com/1.1/search/tweets.json?"
 
 class TweetMining(object):
     def __init__(self, method = "tf_idf"):
@@ -15,10 +15,21 @@ class TweetMining(object):
     def setup(self):
         config = {}
         execfile("config.py", config)
-        self.twitter = Twitter(auth = OAuth(config["access_key"], 
-                                            config["access_secret"], 
-                                            config["consumer_key"], 
-                                            config["consumer_secret"]))
+
+        consumer_key = config["consumer_key"]
+        consumer_secret = config["consumer_secret"]
+        bearer_token = "%s:%s" % (consumer_key, consumer_secret)
+        bearer_token_64 = base64.b64encode(bearer_token)
+
+        token_request = urllib2.Request("https://api.twitter.com/oauth2/token") 
+        token_request.add_header("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8")
+        token_request.add_header("Authorization", "Basic %s" % bearer_token_64)
+        token_request.data = "grant_type=client_credentials"
+
+        token_response = urllib2.urlopen(token_request)
+        token_contents = token_response.read()
+        token_data = json.loads(token_contents)
+        self.access_token = token_data["access_token"]
 
         if self.method == "word_embeddings":
             self.vectors = {}
@@ -58,15 +69,19 @@ class TweetMining(object):
     #   => "statuses" maps to a list of dicts; access "text" key to get status text
     # hashtag_set is a list of hashtags to search for (don't include #)
     def get_query(self, hashtag_set):
-        query = ""
+        query = "q="
         for i in range(len(hashtag_set)):
             query += "%23" + hashtag_set[i]
             if i < len(hashtag_set) - 1:
                 query += "%20OR%20"
-        return self.twitter.search.tweets(q = query, 
-                                          count = 100, 
-                                          lang = "en", 
-                                          result_type = "mixed")
+
+        query_url = BASE_SEARCH_URL + query + "&result_type=mixed&lang=en&count=100"
+        request = urllib2.Request(query_url)
+        request.add_header("Authorization", "Bearer %s" % self.access_token)
+
+        response = urllib2.urlopen(request)
+        contents = response.read()
+        return json.loads(contents)
 
     # Helper method for get_topical_words
     # Processes statuses in-place by removing irrelevant components
