@@ -4,7 +4,6 @@ from django.http import HttpResponse
 from .models import Docs
 from django.template import loader
 from .form import QueryForm
-from .test import find_similar
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import json
 from linegen import *
@@ -16,7 +15,7 @@ def index(request):
     if request.GET.get('search'):
         search = request.GET.get('search')
         ##### OUR CODE #####
-        json_data = open('dataset.json')
+        json_data = open('project_template/dataset.json')
         dirty_lyrics = json.load(json_data)
         lyrics = []
         for lyric in dirty_lyrics:
