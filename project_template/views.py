@@ -18,12 +18,13 @@ def index(request):
         search = request.GET.get('search')
 
         ### Get tweet words ###
+        nltk.data.path.append('nltk_data/')
         hashtags = nltk.word_tokenize(search)
         TM = TweetMining()
         tweetwords = TM.get_topical_words(hashtags)
 
         ### Load corpus ###
-        json_data = open('dataset.json').read()
+        json_data = open('project_template/dataset.json').read()
         lyrics = json.loads(json_data)
 
         ### Generate lyrics

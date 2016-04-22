@@ -3,6 +3,7 @@ import random
 
 def replace_random_word(line, candidate_words):
 	new_line = list(line)
+        nltk.data.path.append('nltk_data/')
 	pos = nltk.pos_tag(line)
 	noun_idxs = []
 	for i in range(len(line)):
@@ -15,5 +16,5 @@ def replace_random_word(line, candidate_words):
 		new_line[rand_noun_idx] = random.choice(candidate_words)
 		return new_line
 
-	
+
 
