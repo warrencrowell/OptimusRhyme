@@ -17,8 +17,11 @@ def index(request):
         search = request.GET.get('search')
         ##### OUR CODE #####
         json_data = open('dataset.json').read()
-        lyrics = json.loads(json_data)
-
+        dirty_lyrics = json.loads(json_data)
+        lyrics = []
+        for lyric in dirty_lyrics:
+            if len(lyric) > 0:
+                lyrics.append(lyric) 
         output_list = []
         for i in range(8):
             output_list.append(" ".join(get_random_line(lyrics)))
