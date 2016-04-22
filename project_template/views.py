@@ -6,7 +6,9 @@ from django.template import loader
 from .form import QueryForm
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import json
+from tweetmining import *
 from linegen import *
+from wordswap import *
 
 # Create your views here.
 def index(request):
@@ -14,17 +16,24 @@ def index(request):
     output=''
     if request.GET.get('search'):
         search = request.GET.get('search')
-        ##### OUR CODE #####
-        json_data = open('project_template/dataset.json')
-        dirty_lyrics = json.load(json_data)
-        lyrics = []
-        for lyric in dirty_lyrics:
-            if len(lyric) > 0:
-                lyrics.append(lyric)
+
+        ### Get tweet words ###
+        hashtags = nltk.word_tokenize(search)
+        TM = TweetMining()
+        tweetwords = TM.get_topical_words(hashtags)
+
+        ### Load corpus ###
+        json_data = open('dataset.json').read()
+        lyrics = json.loads(json_data)
+
+        ### Generate lyrics
         output_list = []
         for i in range(8):
-            output_list.append(" ".join(get_random_line(lyrics)))
-        ####################
+            line = get_random_line(lyrics)
+            altered_line = replace_random_word(line, tweetwords)
+            output_list.append(" ".join(altered_line))
+
+        ### End of our code ###
         paginator = Paginator(output_list, 10)
         page = request.GET.get('page')
         try:

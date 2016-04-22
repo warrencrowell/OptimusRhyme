@@ -97,6 +97,6 @@ class TweetMining(object):
             statuses[i] = " ".join([word[0] for word in pos_info if "NN" in word[1]])
 
 
-TM = TweetMining()
-words = TM.get_topical_words(["sandwich"])
-print words
+# TM = TweetMining()
+# words = TM.get_topical_words(["sandwich"])
+# print words

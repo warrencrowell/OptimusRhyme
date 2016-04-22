@@ -1,9 +1,14 @@
 import json
 from tweetmining import *
 from linegen import *
+from wordswap import *
+
+search = "ham sandwich"
 
 ### Get tweet words ###
-tweetwords = ['Hello', 'World']
+hashtags = nltk.word_tokenize(search)
+TM = TweetMining()
+tweetwords = TM.get_topical_words(hashtags)
 
 ### Load corpus ###
 json_data = open('dataset.json').read()
@@ -16,4 +21,5 @@ for i in range(8):
 	altered_line = replace_random_word(line, tweetwords)
 	output_list.append(" ".join(altered_line))
 
-print output_list
+for output in output_list:
+	print output
