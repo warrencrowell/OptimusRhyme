@@ -6,6 +6,8 @@ from django.template import loader
 from .form import QueryForm
 from .test import find_similar
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+import json
+from linegen import *
 
 # Create your views here.
 def index(request):
@@ -13,9 +15,14 @@ def index(request):
     output=''
     if request.GET.get('search'):
         search = request.GET.get('search')
-        # TODO put in our own search
-        #output_list = find_similar(search)
-        output_list = ["Ryan Vogan" for i in range(100)]
+        ##### OUR CODE #####
+        json_data = open('dataset.json').read()
+        lyrics = json.loads(json_data)
+
+        output_list = []
+        for i in range(8):
+            output_list.append(" ".join(get_random_line(lyrics)))
+        ####################
         paginator = Paginator(output_list, 10)
         page = request.GET.get('page')
         try:
