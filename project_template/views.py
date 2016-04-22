@@ -13,7 +13,9 @@ def index(request):
     output=''
     if request.GET.get('search'):
         search = request.GET.get('search')
-        output_list = find_similar(search)
+        # TODO put in our own search
+        #output_list = find_similar(search)
+        output_list = ["Ryan Vogan" for i in range(100)]
         paginator = Paginator(output_list, 10)
         page = request.GET.get('page')
         try:
@@ -22,7 +24,7 @@ def index(request):
             output = paginator.page(1)
         except EmptyPage:
             output = paginator.page(paginator.num_pages)
-    return render_to_response('project_template/index.html', 
+    return render_to_response('project_template/index.html',
                           {'output': output,
                            'magic_url': request.get_full_path(),
                            })
