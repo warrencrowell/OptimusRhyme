@@ -16,4 +16,4 @@ for i in range(8):
 	altered_line = replace_random_word(line, tweetwords)
 	output_list.append(" ".join(altered_line))
 
-print output_list 
+print output_list
