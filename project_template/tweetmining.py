@@ -10,6 +10,7 @@ class TweetMining(object):
         self.twitter = None
         self.method = method
         self.setup()
+        nltk.data.path.append('nltk_data/')
 
     # Sets up Twitter API connection
     def setup(self):
@@ -21,7 +22,7 @@ class TweetMining(object):
         bearer_token = "%s:%s" % (consumer_key, consumer_secret)
         bearer_token_64 = base64.b64encode(bearer_token)
 
-        token_request = urllib2.Request("https://api.twitter.com/oauth2/token") 
+        token_request = urllib2.Request("https://api.twitter.com/oauth2/token")
         token_request.add_header("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8")
         token_request.add_header("Authorization", "Basic %s" % bearer_token_64)
         token_request.data = "grant_type=client_credentials"
@@ -95,7 +96,6 @@ class TweetMining(object):
 
             pos_info = nltk.pos_tag(nltk.word_tokenize(statuses[i]))
             statuses[i] = " ".join([word[0] for word in pos_info if "NN" in word[1]])
-
 
 # TM = TweetMining()
 # words = TM.get_topical_words(["sandwich"])
