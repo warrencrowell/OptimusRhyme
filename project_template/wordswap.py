@@ -15,7 +15,10 @@ def replace_random_word(line, candidate_words):
 		return line
 	else:
 		rand_noun_idx = random.choice(noun_idxs)
-		new_line[rand_noun_idx] = '<font color=\"red\">' + random.choice(candidate_words) + '</font>'
+        old_noun = new_line[rand_noun_idx]
+		new_line[rand_noun_idx] = '<font color=\"green\">' + random.choice(candidate_words) + '</font>'
+        new_line.append("|")
+        new_line.append('<font color=\"red\">' + old_noun + '</font>')
 		return new_line
 
 def remove_punctuation(line):
