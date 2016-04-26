@@ -4,7 +4,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 import os
 
 MIN_RESULTS = 30 # Minimum number of results needed for valid user input
-ON_HEROKU = False
+ON_HEROKU = True
 BASE_SEARCH_URL = "https://api.twitter.com/1.1/search/tweets.json?"
 
 class TweetMining(object):
