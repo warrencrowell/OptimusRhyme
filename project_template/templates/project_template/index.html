@@ -36,12 +36,18 @@
             <button type="submit" class="btn btn-info"> Go! </button>
         </form>
 
-        <div>
+        <div class="container">
+          <h2>Text</h2>
+          <p class="text-primary">This paragraph is <font color="red">styled</font> with class "text-primary".</p>            
+          <a class="text-primary" href="default.asp">This link is styled with class "text-primary".</a>           
+        </div>
+
+        <!-- <div class="form-inline global-search">
             {% for line in output %}
                 {{line}}<br>
             {% endfor %}
 
-            <!-- <div class="pagination">
+            <div class="pagination">
                 <span class="step-links">
                     {% if output.has_previous %}
                     <a href= "{{magic_url}}&page={{ output.previous_page_number }}">previous</a>
@@ -55,7 +61,7 @@
                     <a href= "{{magic_url}}&page={{ output.next_page_number }}">next</a>
                     {% endif %}
                 </span>
-            </div> -->
-        </div>
+            </div>
+        </div> -->
     </body>
 </html>
