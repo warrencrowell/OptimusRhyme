@@ -36,19 +36,17 @@
             <button type="submit" class="btn btn-info"> Go! </button>
         </form>
 
-        <div class="form-inline global-search">
-            <h4>Output</h4><br>
+        <div>
             {% for line in output %}
                 {{line}}<br>
             {% endfor %}
 
-            <div class="pagination">
+            <!-- <div class="pagination">
                 <span class="step-links">
                     {% if output.has_previous %}
                     <a href= "{{magic_url}}&page={{ output.previous_page_number }}">previous</a>
                     {% endif %}
 
-                    <!-- Showing the page numbers in Html Page -->
                     <span class="current">
                     Page _{{ output.number }}_ of _{{ output.paginator.num_pages }}_
                     </span>
@@ -57,7 +55,7 @@
                     <a href= "{{magic_url}}&page={{ output.next_page_number }}">next</a>
                     {% endif %}
                 </span>
-            </div>
+            </div> -->
         </div>
     </body>
 </html>
