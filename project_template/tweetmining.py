@@ -4,6 +4,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 import os
 
 MIN_RESULTS = 30 # Minimum number of results needed for valid user input
+ON_HEROKU = False
 BASE_SEARCH_URL = "https://api.twitter.com/1.1/search/tweets.json?"
 
 class TweetMining(object):
@@ -15,11 +16,15 @@ class TweetMining(object):
 
     # Sets up Twitter API connection
     def setup(self):
-        config = {}
-        #execfile("config.py", config)
+        if ON_HEROKU:
+            consumer_key = os.getenv('CONSUMER_KEY')
+            consumer_secret = os.getenv('CONSUMER_SECRET')
+        else:
+            config = {}
+            execfile("config.py", config)
+            consumer_key = config["consumer_key"]
+            consumer_secret = config["consumer_secret"]
 
-        consumer_key =os.getenv('CONSUMER_KEY') #config["consumer_key"]
-        consumer_secret = os.getenv('CONSUMER_SECRET') #config["consumer_secret"]
         bearer_token = "%s:%s" % (consumer_key, consumer_secret)
         bearer_token_64 = base64.b64encode(bearer_token)
 
