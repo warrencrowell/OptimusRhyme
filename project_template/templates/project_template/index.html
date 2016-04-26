@@ -41,7 +41,7 @@
           <p class="text-primary">This paragraph is <font color="red">styled</font> with class "text-primary".</p>            
           <a class="text-primary" href="default.asp">This link is styled with class "text-primary".</a>    
           {% for line in output %}
-            {{line}}<br>
+            {% autoescape off %}{{line}}{% endautoescape %}<br>
           {% endfor %}       
         </div>
 
