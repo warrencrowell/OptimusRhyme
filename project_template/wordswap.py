@@ -1,11 +1,11 @@
 import nltk
 import random
 
-MERGE_BACK_TOKS = [',', 'n\'t', '\'s', '\'re', '\'', '!', '.', '?']
+REMOVE_SYMS = ['[', ']', '(', ')']
+MERGE_SYMS = [',', '\'', '!', '.', '?']
 
 def replace_random_word(line, candidate_words):
 	new_line = list(line)
-        nltk.data.path.append('nltk_data/')
 	pos = nltk.pos_tag(line)
 	noun_idxs = []
 	for i in range(len(line)):
@@ -18,22 +18,32 @@ def replace_random_word(line, candidate_words):
 		new_line[rand_noun_idx] = random.choice(candidate_words) + '*'
 		return new_line
 
-
-def format_punctuation(line): 
+def remove_punctuation(line):
     for i in range(len(line)):
-        if line[i] in MERGE_BACK_TOKS:
-            line[i-1] = line[i-1] + line[i]
+        if line[i] in REMOVE_SYMS:
             if len(line) > i+1:
-                return format_punctuation(line[:i] + line[i+1:])
+                return remove_punctuation(line[:i] + line[i+1:])
             else:
                 return line[:i]
     return line
+
+def merge_punctuation(line, start_idx): 
+    for i in range(start_idx, len(line)):
+        if True in [sym in line[i] for sym in MERGE_SYMS]:
+            line[i-1] = line[i-1] + line[i]
+            if len(line) > i+1:
+                return merge_punctuation(line[:i] + line[i+1:], i)
+            else:
+                return line[:i]
+    return line
+
 
 def format_lines(lines):
     new_lines = list(lines)	
     for i in range(len(new_lines)):
         curr_line = new_lines[i]
+        curr_line = remove_punctuation(curr_line)
+        curr_line = merge_punctuation(curr_line, 0)
         curr_line[0] = curr_line[0][0].upper() + curr_line[0][1:]
-        curr_line = format_punctuation(curr_line)
         new_lines[i] = " ".join(curr_line)
     return new_lines

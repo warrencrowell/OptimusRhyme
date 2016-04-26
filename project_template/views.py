@@ -9,12 +9,14 @@ import json
 from tweetmining import *
 from linegen import *
 from wordswap import *
+import os
 
 # Create your views here.
 def index(request):
     output_list = ''
     output=''
     if request.GET.get('search'):
+        nltk.data.path.append('nltk_data/')
         search = request.GET.get('search')
 
         ### Get tweet words ###
@@ -23,15 +25,18 @@ def index(request):
         tweetwords = TM.get_topical_words(hashtags)
 
         ### Load corpus ###
-        json_data = open('dataset.json').read()
+        if os.path.isfile('dataset.json'):
+            json_data = open('dataset.json').read()
+        else:
+            json_data = open('project_template/dataset.json').read()
         lyrics = json.loads(json_data)
 
         ### Generate lyrics
         output_list = [get_random_line(lyrics)]
         for i in range(8):
-        	line = get_random_line(lyrics, output_list[-1])
-        	altered_line = replace_random_word(line, tweetwords)
-        	output_list.append(altered_line)
+            line = get_random_line(lyrics, output_list[-1])
+            altered_line = replace_random_word(line, tweetwords)
+            output_list.append(altered_line)
         output_list = format_lines(output_list)
 
         ### End of our code ###

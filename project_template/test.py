@@ -3,6 +3,8 @@ from tweetmining import *
 from linegen import *
 from wordswap import *
 
+
+nltk.data.path.append('nltk_data/')
 search = "ham sandwich"
 
 ### Get tweet words ###
@@ -11,7 +13,10 @@ TM = TweetMining()
 tweetwords = TM.get_topical_words(hashtags)
 
 ### Load corpus ###
-json_data = open('dataset.json').read()
+if os.path.isfile('dataset.json'):
+    json_data = open('dataset.json').read()
+else:
+    json_data = open('project_template/dataset.json').read()
 lyrics = json.loads(json_data)
 
 ### Generate lyrics
