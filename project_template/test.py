@@ -20,8 +20,8 @@ else:
 lyrics = json.loads(json_data)
 
 ### Generate lyrics
-output_list = [get_random_line(lyrics)]
-for i in range(8):
+output_list = [replace_random_word(get_random_line(lyrics),tweetwords)]
+for i in range(7):
 	line = get_random_line(lyrics, output_list[-1])
 	altered_line = replace_random_word(line, tweetwords)
 	output_list.append(altered_line)
