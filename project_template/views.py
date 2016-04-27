@@ -21,7 +21,7 @@ def index(request):
         algorithm = request.GET.get('algorithm') # Either 'prototype' or 'final'
 
         ### Get tweet words ###
-        hashtags = nltk.word_tokenize(search)
+        hashtags = search.split()
         TM = TweetMining()
         tweetwords = TM.get_topical_words(hashtags)
 
