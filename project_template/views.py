@@ -18,6 +18,7 @@ def index(request):
     if request.GET.get('search'):
         nltk.data.path.append('nltk_data/')
         search = request.GET.get('search')
+        algorithm = request.GET.get('algorithm') # Either 'prototype' or 'final'
 
         ### Get tweet words ###
         hashtags = nltk.word_tokenize(search)
@@ -25,7 +26,7 @@ def index(request):
         tweetwords = TM.get_topical_words(hashtags)
 
         if len(tweetwords) == 0:
-            output_list = ["Not enough tweets are associated with the input hashtag/s. Please try again."]
+            output_list = ['Not enough tweets are associated with the input hashtag(s). Please try again.']
         else:
             ### Load corpus ###
             if os.path.isfile('dataset.json'):
@@ -35,13 +36,16 @@ def index(request):
             lyrics = json.loads(json_data)
 
             ### Generate lyrics
-            output_list = [replace_random_word(get_random_line(lyrics),tweetwords)]
-            for i in range(7):
-                line = get_random_line(lyrics, output_list[-1])
-                altered_line = replace_random_word(line, tweetwords)
-                output_list.append(altered_line)
-        
-            output_list = format_lines(output_list)
+            if algorithm == 'prototype':
+                output_list = [replace_random_word(get_random_line(lyrics),tweetwords)]
+                for i in range(7):
+                    line = get_random_line(lyrics, output_list[-1])
+                    altered_line = replace_random_word(line, tweetwords)
+                    output_list.append(altered_line)
+            
+                output_list = format_lines(output_list)
+            elif algorithm == 'final':
+                output_list = ['Final system is currently in construction. Please use the prototype version for now.']
 
         ### End of our code ###
         paginator = Paginator(output_list, 10)
