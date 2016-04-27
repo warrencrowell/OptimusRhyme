@@ -41,7 +41,7 @@ def index(request):
                 altered_line = replace_random_word(line, tweetwords)
                 output_list.append(altered_line)
         
-        output_list = format_lines(output_list)
+            output_list = format_lines(output_list)
 
         ### End of our code ###
         paginator = Paginator(output_list, 10)
