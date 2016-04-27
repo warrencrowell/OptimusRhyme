@@ -49,7 +49,8 @@ class TweetMining(object):
     def get_topical_words(self, hashtag_set, num_words = 20):
         statuses = [t["text"] for t in self.get_query(hashtag_set)["statuses"]]
         if len(statuses) < MIN_RESULTS:
-            raise Exception("Error: Not enough tweets returned by given hashtags")
+            return []
+            
         self.process_tweets(statuses)
 
         if self.method == "tf_idf":
@@ -81,7 +82,7 @@ class TweetMining(object):
                     topical_words.append(similar_word)
                 if len(topical_words) == num_words:
                     break
-                    
+
             return topical_words
 
         else:
