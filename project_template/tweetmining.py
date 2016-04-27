@@ -90,7 +90,7 @@ class TweetMining(object):
 
     # Helper function for get_topical_words
     # Cleans up hashtag list input by stripping hashtags if they exist
-    def cleanup_tags(hashtags):
+    def cleanup_tags(self, hashtags):
         result = []
         for h in hashtag:
             result.append(h.strip('#').strip())
