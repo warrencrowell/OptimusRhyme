@@ -93,7 +93,7 @@ class TweetMining(object):
     def cleanup_tags(self, hashtags):
         result = []
         for h in hashtags:
-            result.append(h.strip('#').strip())
+            result.append(h.strip('%23').strip())
         return result
 
     # Helper function for get_topical_words
