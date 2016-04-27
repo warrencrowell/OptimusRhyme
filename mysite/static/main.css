@@ -11,6 +11,8 @@ text-align:center;
 body {
 padding-top: 15%;
 padding-bottom: 15px;
+color: #ffffff;
+font-size: 150%;
 background-image: url("record-background.jpg");
 background-repeat: no-repeat;
 background-attachment: fixed;
