@@ -60,12 +60,29 @@ class TweetMining(object):
             return [features[i] for i in top_indices[:num_words]]
 
         elif self.method == "word_embeddings":
+            topic_matrix = []
+            word_list = []
             for status in statuses:
                 words = nltk.word_tokenize(status)
                 for word in words:
                     if word in self.vectors:
-                        topic_vector = np.add(topic_vector, self.vectors[word])
-            raise Exception("Error: Word embeddings not implemented yet")
+                        topic_matrix.append(self.vectors[word])
+                        word_list.append(word)
+
+            np_topic_matrix = np.array(topic_matrix)
+            diff_matrix = np_topic_matrix - np.mean(np_topic_matrix, axis=0)
+            distances = np.sum(np.square(diff_matrix), axis=1)
+            closest_indices = np.argsort(distances)[::-1]
+
+            topical_words = []
+            for ind in closest_indices:
+                similar_word = word_list[ind]
+                if similar_word not in topical_words:
+                    topical_words.append(similar_word)
+                if len(topical_words) == num_words:
+                    break
+                    
+            return topical_words
 
         else:
             raise Exception("Error: Invalid method specified")
