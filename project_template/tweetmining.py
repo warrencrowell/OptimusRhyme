@@ -92,7 +92,7 @@ class TweetMining(object):
     # Cleans up hashtag list input by stripping hashtags if they exist
     def cleanup_tags(self, hashtags):
         result = []
-        for h in hashtag:
+        for h in hashtags:
             result.append(h.strip('#').strip())
         return result
 
