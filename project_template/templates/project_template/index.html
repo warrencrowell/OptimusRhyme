@@ -24,8 +24,7 @@
             <br><br>
 
             <div class="form-group">
-                <input id="input" type="text" name="search" class="form-control" placeholder="Input a hashtag or a list of hashtags separated by spaces">
-                <div style="right: 25; top: 120; text-align: center">
+                <div style="position: absolute; right: 25; top: 120; text-align: right">
                     <b>Select algorithm version:</b><br>
                     {% if algorithm == '' or algorithm == 'prototype' %}
                         <input type="radio" name="algorithm" value="prototype" checked> Prototype <br>
@@ -35,6 +34,7 @@
                         <input type="radio" name="algorithm" value="final" checked> Final <br>
                     {% endif %}                                      
                 </div>
+                <input id="input" type="text" name="search" class="form-control" placeholder="Input a hashtag or a list of hashtags separated by spaces">
             </div>
             <button type="submit" class="btn btn-info"> Go! </button>
         </form>

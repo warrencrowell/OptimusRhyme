@@ -11,9 +11,10 @@ text-align:center;
 body {
 padding-top: 15%;
 padding-bottom: 15px;
-color: #1b1b1b;
+color: #ffffff;
 font-family: "Open Sans", sans-serif;
 font-size: 150%;
+background-color: #1b1b1b;
 background-image: url("record-background-darker.jpg");
 background-repeat: no-repeat;
 background-attachment: fixed;
