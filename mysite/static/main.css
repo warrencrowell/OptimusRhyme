@@ -12,6 +12,7 @@ body {
 padding-top: 15%;
 padding-bottom: 15px;
 color: #ffffff;
+font-family: "Open Sans", sans-serif;
 font-size: 150%;
 background-image: url("record-background.jpg");
 background-repeat: no-repeat;
@@ -42,6 +43,10 @@ border: none
 }
 a.btn a:hover {
 background-color: #4285F4;
+}
+a:link {
+text-decoration: none;
+color: inherit;
 }
 .step-links a{
 color: #4285F4;
