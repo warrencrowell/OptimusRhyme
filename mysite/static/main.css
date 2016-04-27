@@ -11,6 +11,10 @@ text-align:center;
 body {
 padding-top: 15%;
 padding-bottom: 15px;
+background-image: url("record-background.jpg");
+background-repeat: no-repeat;
+background-attachment: fixed;
+background-position: center;
 }
 .global-search {
 text-align:center;
@@ -32,6 +36,9 @@ right:2%;
 .btn{
 background-color: #4285F4;
 border: none
+}
+a.btn a:hover {
+background-color: #4285F4;
 }
 .step-links a{
 color: #4285F4;
