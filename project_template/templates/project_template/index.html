@@ -3,6 +3,65 @@
         <link href='https://fonts.googleapis.com/css?family=Open+Sans|Amaranth:400,700' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="/static/bootstrap.min.css">
         <link rel="stylesheet" href="/static/main.css">
+
+        <style>
+            @media (min-width: 1200px) {
+            .container {
+                max-width: 970px;
+            }
+            }
+            @media (min-width:400px){
+            .global-search {
+            padding: 20px 0;
+            text-align:center;
+            }
+            body {
+            padding-top: 15%;
+            padding-bottom: 15px;
+            color: #ffffff;
+            font-family: "Open Sans", sans-serif;
+            font-size: 150%;
+            background-image: url("record-background.jpg");
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: center;
+            background-size: cover;
+            }
+            .global-search {
+            text-align:center;
+            padding:10px;
+            }
+            .global-search .form-control {
+            width:500px;
+            }
+            .global-search * {
+            display:inline-block;
+            margin-bottom:0;
+            }
+            }
+            .topcorner{
+            position:absolute;
+            top:2%;
+            right:2%;
+            }
+            .btn{
+            background-color: #4285F4;
+            border: none
+            }
+            
+            a:link {
+            text-decoration: none;
+            color: inherit;
+            }
+            a:link{color:inherit}
+            a:active{color:inherit}
+            a:visited{color:inherit}
+            a:hover{color:inherit}
+            .step-links a{
+            color: #4285F4;
+            }
+        </style>
+
     </head>
 
     <body>
@@ -16,7 +75,7 @@
         </div>
 
         <form class="form-inline global-search" method='GET'>
-            <h1 style="font-size: 70px; font-family: Amaranth, sans-serif; color: #4295DD">
+            <h1 style="font-size: 70px; opacity: 1; font-weight: 700; font-family: Amaranth, sans-serif; color: #55ACEE">
                 <a href="http://cs4300sp2016-tweetbeat.herokuapp.com/">tweetbeat</a>
             </h2>
 
