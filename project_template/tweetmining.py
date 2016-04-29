@@ -33,7 +33,7 @@ class TweetMining(object):
         self.access_token = token_data['access_token']
 
         if self.method == "tf_idf_new":
-            with open("idf.pickle", "rb") as handle:
+            with open("project_template/idf.pickle", "rb") as handle:
                 self.idf = pickle.load(handle)
 
         if self.method == 'word_embeddings':
