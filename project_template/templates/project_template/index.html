@@ -31,12 +31,12 @@
             <br><br>
 
             <div style = "margin-right: 50px;">
-                <input type="radio" name="algorithm" value="prototype" id="pbutton" class="radio" {% if algorithm != 'final' %}checked{% endif %}/>
+                <input type="radio" name="algorithm" value="prototype" id="pbutton" class="radio" {% if algorithm == 'prototype' %}checked{% endif %}/>
                     <label for="pButton"> Prototype </label>
             </div>
                 
             <div style = "margin-left: 50px;">
-                <input type="radio" name="algorithm" value="final" id="fbutton" class="radio" {% if algorithm == 'prototype' %}checked{% endif %}/>
+                <input type="radio" name="algorithm" value="final" id="fbutton" class="radio" {% if algorithm == '' or algorithm != 'prototype' %}checked{% endif %}/>
                     <label for="fbutton"> Final </label>
             </div> 
         </form>

@@ -134,7 +134,7 @@ class TweetMining(object):
         for i in range(len(statuses)):
             statuses[i] = re.sub(r'\S*/\S*', '', statuses[i]) # Links
             statuses[i] = re.sub(r'http\S*', '', statuses[i]) # Hanging https
-            statuses[i] = re.sub(r'#', '', statuses[i]) # Hashtag symbols
+            statuses[i] = re.sub(r'#\S*', '', statuses[i]) # Hashtag symbols
             statuses[i] = re.sub(r'(RT)*( )?@\S*', '', statuses[i]) # RT, @user
             statuses[i] = re.sub(r'\S*\d+\S*', '', statuses[i]) # Numerical
 
