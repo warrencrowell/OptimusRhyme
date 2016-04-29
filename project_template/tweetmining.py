@@ -1,13 +1,14 @@
-import sklearn, re, nltk, base64, json, urllib2
+import sklearn, re, nltk, base64, json, urllib2, os
 import numpy as np
+import cPickle as pickle
 from sklearn.feature_extraction.text import TfidfVectorizer
-import os
+from sklearn.feature_extraction.text import CountVectorizer
 
 MIN_RESULTS = 30 # Minimum number of results needed for valid user input
 BASE_SEARCH_URL = 'https://api.twitter.com/1.1/search/tweets.json?'
 
 class TweetMining(object):
-    def __init__(self, method = 'tf_idf'):
+    def __init__(self, method = 'tf_idf_old'):
         self.twitter = None
         self.method = method
         self.setup()
@@ -15,14 +16,8 @@ class TweetMining(object):
 
     # Sets up Twitter API connection
     def setup(self):
-        if os.path.isfile('config.py'):
-            config = {}
-            execfile('config.py', config)
-            consumer_key = config['consumer_key']
-            consumer_secret = config['consumer_secret']
-        else:
-            consumer_key = os.getenv('CONSUMER_KEY')
-            consumer_secret = os.getenv('CONSUMER_SECRET')
+        consumer_key = os.getenv('CONSUMER_KEY')
+        consumer_secret = os.getenv('CONSUMER_SECRET')
 
         bearer_token = '%s:%s' % (consumer_key, consumer_secret)
         bearer_token_64 = base64.b64encode(bearer_token)
@@ -36,6 +31,10 @@ class TweetMining(object):
         token_contents = token_response.read()
         token_data = json.loads(token_contents)
         self.access_token = token_data['access_token']
+
+        if self.method == "tf_idf_new":
+            with open("idf.pickle", "rb") as handle:
+                self.idf = pickle.load(handle)
 
         if self.method == 'word_embeddings':
             self.vectors = {}
@@ -51,16 +50,30 @@ class TweetMining(object):
         if len(statuses) < MIN_RESULTS:
             return []
 
-        self.process_tweets(statuses)
-
-        if self.method == 'tf_idf':
+        if self.method == 'tf_idf_old':
+            self.process_tweets(statuses)
             vect = TfidfVectorizer(min_df = 2, stop_words = 'english', strip_accents = 'ascii')
             matrix = vect.fit_transform(statuses)
             top_indices = np.argsort(vect.idf_)[::-1]
             features = vect.get_feature_names()
             return [features[i] for i in top_indices[:num_words]]
 
+        elif self.method == 'tf_idf_new':
+            self.process_tweets(statuses, nouns_only = False)
+
+            getIDF = lambda word : self.idf[word] if word in self.idf else 0
+            vect = CountVectorizer(stop_words = 'english', strip_accents = 'ascii')
+
+            tf = vect.fit_transform([' '.join(statuses)]).toarray()
+            features = vect.get_feature_names()
+            idf_vals = np.array([np.log(1600000.0 / (1 + getIDF(word))) for word in features])
+            tfidf = np.multiply(tf, idf_vals)
+
+            top_indices = np.argsort(tfidf[0])[::-1]
+            return [features[i] for i in top_indices[:num_words]]
+
         elif self.method == 'word_embeddings':
+            self.process_tweets(statuses)
             topic_matrix = []
             word_list = []
             for status in statuses:
@@ -117,7 +130,7 @@ class TweetMining(object):
 
     # Helper method for get_topical_words
     # Processes statuses in-place by removing irrelevant components
-    def process_tweets(self, statuses):
+    def process_tweets(self, statuses, nouns_only = True):
         for i in range(len(statuses)):
             statuses[i] = re.sub(r'\S*/\S*', '', statuses[i]) # Links
             statuses[i] = re.sub(r'http\S*', '', statuses[i]) # Hanging https
@@ -125,5 +138,6 @@ class TweetMining(object):
             statuses[i] = re.sub(r'(RT)*( )?@\S*', '', statuses[i]) # RT, @user
             statuses[i] = re.sub(r'\S*\d+\S*', '', statuses[i]) # Numerical
 
-            pos_info = nltk.pos_tag(nltk.word_tokenize(statuses[i]))
-            statuses[i] = ' '.join([word[0] for word in pos_info if 'NN' in word[1]])
+            if nouns_only:
+                pos_info = nltk.pos_tag(nltk.word_tokenize(statuses[i]))
+                statuses[i] = ' '.join([word[0] for word in pos_info if 'NN' in word[1]])
