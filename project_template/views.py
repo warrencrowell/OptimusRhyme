@@ -68,7 +68,10 @@ def index(request):
                     output_list.append(altered_line)
                 
                 output_list = format_lines(output_list)
-                output_list = ['<b>TOP FIVE WORDS</b>'] + tweetwords[:5] + [''] + output_list
+
+                input_hashtags = ', '.join(['#' + h if h[0] != '#' else h for h in hashtags])
+                output_title = ['<b>TOP FIVE WORDS FOR ' + input_hashtags + '</b>']
+                output_list = output_title.extend(tweetwords[:5] + [''] + output_list)
 
         ### End of our code ###
         paginator = Paginator(output_list, 17)
