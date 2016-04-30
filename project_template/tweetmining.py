@@ -94,7 +94,7 @@ class TweetMining(object):
         for i in range(len(hashtag_set)):
             base_query += '%23' + hashtag_set[i]
             if i < len(hashtag_set) - 1:
-                query += '%20OR%20'
+                base_query += '%20OR%20'
         base_query += '&lang=en&result_type=recent&count=100'
 
         def callAPI(query_url):
