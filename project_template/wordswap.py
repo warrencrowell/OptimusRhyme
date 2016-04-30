@@ -1,8 +1,23 @@
 import nltk
+from nltk import wordnet as wn
 import random
 
 REMOVE_SYMS = ['[', ']', '(', ')']
 MERGE_SYMS = [',', '\'', '!', '.', '?']
+
+def compare_word_similarities(word1,word2):
+    syns1 = wn.synsets(word1)
+    if(len(syns1)<1):
+        return 0.0
+    syns2 = wn.synsets(word2)
+    if(len(syns2)<1):
+        return 0.0
+    try:
+        sym = wn.wup_similarity(syns1[0],syns2[0])
+        return sym
+    except:
+        return 0.0
+
 
 def replace_random_word(line, candidate_words):
     new_line = list(line)
@@ -30,7 +45,7 @@ def remove_punctuation(line):
                 return line[:i]
     return line
 
-def merge_punctuation(line, start_idx): 
+def merge_punctuation(line, start_idx):
     for i in range(start_idx, len(line)):
         if True in [sym in line[i] for sym in MERGE_SYMS]:
             line[i-1] = line[i-1] + line[i]
@@ -41,8 +56,9 @@ def merge_punctuation(line, start_idx):
     return line
 
 
+
 def format_lines(lines):
-    new_lines = list(lines) 
+    new_lines = list(lines)
     for i in range(len(new_lines)):
         curr_line = new_lines[i]
         curr_line = remove_punctuation(curr_line)
