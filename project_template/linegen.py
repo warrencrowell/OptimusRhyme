@@ -4,7 +4,11 @@ import random
 def get_random_line(corpus, last_line = None):
     while True:
         song = random.choice(corpus)
+        while len(song)<1:
+            song = random.choice(corpus)
         line = random.choice(song)
+        while len(line)<1:
+            line = random.choice(song)
         pos = nltk.pos_tag(line)
         noun_found = False
         for i in range(len(line)):
