@@ -1,4 +1,4 @@
-import sklearn, re, nltk, base64, json, urllib2, enchant
+import sklearn, re, nltk, base64, json, urllib2
 import numpy as np
 import cPickle as pickle
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -12,7 +12,6 @@ class TweetMining(object):
         nltk.data.path.append('nltk_data/')
         self.method = method
         self.setup()
-        self.dict = enchant.Dict('en-us')
 
     # Sets up Twitter API connection
     def setup(self):
@@ -31,6 +30,9 @@ class TweetMining(object):
         token_contents = token_response.read()
         token_data = json.loads(token_contents)
         self.access_token = token_data['access_token']
+
+        with open('project_template/pho_dict.p', 'rb') as handle:
+            self.dict = pickle.load(handle)
 
         if self.method == 'tf_idf_new':
             with open('project_template/idf.pickle', 'rb') as handle:
@@ -62,11 +64,11 @@ class TweetMining(object):
             idf_vals = np.array([np.log(1600000.0 / (1 + getIDF(word))) for word in features])
             tfidf = np.multiply(tf, idf_vals)
 
-            top_words = [word for word in hashtag_set if self.dict.check(word)]
+            top_words = [word for word in hashtag_set if word.upper() in self.dict]
             top_indices = np.argsort(tfidf[0])[::-1]
             for i in top_indices:
                 word = features[i]
-                if word not in top_words and self.dict.check(word):
+                if word not in top_words and word.upper() in self.dict:
                     top_words.append(word)
                 if len(top_words) == num_words:
                     break
