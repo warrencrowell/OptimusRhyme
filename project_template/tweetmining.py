@@ -80,10 +80,7 @@ class TweetMining(object):
     # Helper function for get_topical_words
     # Cleans up hashtag list input by stripping hashtags if they exist
     def cleanup_tags(self, hashtags):
-        result = []
-        for h in hashtags:
-            result.append(h.strip('#').strip())
-        return result
+        return [h.strip('#').strip() for h in hashtags]
 
     # Helper function for get_topical_words
     # Returns dict of keys "status_metadata" and "statuses" from Twitter API
@@ -129,8 +126,10 @@ class TweetMining(object):
             statuses[i] = re.sub(r'htt\S*', '', statuses[i]) # Hanging https
             statuses[i] = re.sub(r'#\S*', '', statuses[i]) # Hashtag symbols
             statuses[i] = re.sub(r'(RT)*( )?@\S*', '', statuses[i]) # RT, @user
+            statuses[i] = re.sub(r'(RT |rt[^a-z])', '', statuses[i]) # RT/rt
             statuses[i] = re.sub(r'\S*\d+\S*', '', statuses[i]) # Numerical
             statuses[i] = re.sub(r"\w+'[^s ]+", '', statuses[i]) # Contractions
+            statuses[i] = re.sub(r'&\S+;', '', statuses[i]) # HTML entities
 
             if nouns_only:
                 pos_info = nltk.pos_tag(nltk.word_tokenize(statuses[i]))
