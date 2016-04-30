@@ -48,7 +48,7 @@ def index(request):
 
         elif algorithm == 'final':
             TM = TweetMining(method = 'tf_idf_new')
-            tweetwords = TM.get_topical_words(hashtags)
+            tweetwords, word_frequencies = TM.get_topical_words(hashtags)
 
             if len(tweetwords) == 0:
                 output_list = ['Not enough tweets are associated with the input hashtag(s). Please try again.']
@@ -85,5 +85,5 @@ def index(request):
     return render_to_response('project_template/index.html',
                           {'output': output,
                            'magic_url': request.get_full_path(),
-                           'word_cloud_list_1': [("word1",50),("word2",40),("word3",10),("word4",34),("word5",20)],
+                           'word_cloud_list_1': word_frequencies,
                            })
