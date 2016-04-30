@@ -45,6 +45,18 @@ def index(request):
                     output_list.append(altered_line)
 
                 output_list = format_lines(output_list)
+            paginator = Paginator(output_list, 17)
+            page = request.GET.get('page')
+            try:
+                output = paginator.page(page)
+            except PageNotAnInteger:
+                output = paginator.page(1)
+            except EmptyPage:
+                output = paginator.page(paginator.num_pages)
+            return render_to_response('project_template/index.html',
+                            {'output': output,
+                            'magic_url': request.get_full_path(),
+                            })
 
         elif algorithm == 'final':
             TM = TweetMining(method = 'tf_idf_new')
@@ -72,6 +84,20 @@ def index(request):
                 input_hashtags = ', '.join(['#' + h if h[0] != '#' else h for h in hashtags])
                 output_title = ['<b>TOP FIVE WORDS FOR ' + input_hashtags + '</b>']
                 output_list = output_title + tweetwords[:5] + [''] + output_list
+            ### End of our code ###
+            paginator = Paginator(output_list, 17)
+            page = request.GET.get('page')
+            try:
+                output = paginator.page(page)
+            except PageNotAnInteger:
+                output = paginator.page(1)
+            except EmptyPage:
+                output = paginator.page(paginator.num_pages)
+            return render_to_response('project_template/index.html',
+                          {'output': output,
+                           'magic_url': request.get_full_path(),
+                           'word_cloud_list_1': word_frequencies,
+                           })
 
         ### End of our code ###
         paginator = Paginator(output_list, 17)
@@ -85,5 +111,4 @@ def index(request):
     return render_to_response('project_template/index.html',
                           {'output': output,
                            'magic_url': request.get_full_path(),
-                           'word_cloud_list_1': word_frequencies,
                            })
