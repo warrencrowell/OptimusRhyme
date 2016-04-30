@@ -65,7 +65,7 @@ class TweetMining(object):
             tfidf = np.multiply(tf, idf_vals)
 
             top_tf_inds = np.argsort(tf[0])[::-1]
-            word_frequencies = [(features[i], tf[0][i]) for i in top_tf_inds[:50]]
+            word_frequencies = [(features[i], tf[0][i]) for i in top_tf_inds[:30]]
 
             top_words = [word for word in hashtag_set if word.upper() in self.dict]
             top_indices = np.argsort(tfidf[0])[::-1]
@@ -83,7 +83,7 @@ class TweetMining(object):
     # Helper function for get_topical_words
     # Cleans up hashtag list input by stripping hashtags if they exist
     def cleanup_tags(self, hashtags):
-        return [h.strip('#').strip() for h in hashtags]
+        return [h.strip(',').strip('#').strip() for h in hashtags]
 
     # Helper function for get_topical_words
     # Returns dict of keys "status_metadata" and "statuses" from Twitter API
