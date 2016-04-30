@@ -41,7 +41,7 @@ class TweetMining(object):
     # Returns list of at most num_words topical words for the given hashtag_set
     def get_topical_words(self, hashtag_set, num_words = 20):
         hashtag_set = self.cleanup_tags(hashtag_set)
-        statuses = [t['text'] for t in self.get_tweets(hashtag_set, 500 * len(hashtag_set))]
+        statuses = [t['text'] for t in self.get_tweets(hashtag_set, 200 * len(hashtag_set))]
         if len(statuses) < MIN_RESULTS:
             return []
 
