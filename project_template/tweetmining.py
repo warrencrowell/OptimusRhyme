@@ -65,8 +65,9 @@ class TweetMining(object):
             top_words = [word for word in hashtag_set if self.dict.check(word)]
             top_indices = np.argsort(tfidf[0])[::-1]
             for i in top_indices:
-                if features[i] not in top_words:
-                    top_words.append(features[i])
+                word = features[i]
+                if word not in top_words and self.dict.check(word):
+                    top_words.append(word)
                 if len(top_words) == num_words:
                     break
             return top_words
