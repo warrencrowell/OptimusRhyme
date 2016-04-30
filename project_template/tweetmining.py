@@ -1,4 +1,4 @@
-import sklearn, re, nltk, base64, json, urllib2
+import sklearn, re, nltk, base64, json, urllib2, os
 import numpy as np
 import cPickle as pickle
 from sklearn.feature_extraction.text import TfidfVectorizer
