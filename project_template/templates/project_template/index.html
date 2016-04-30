@@ -4,6 +4,16 @@
         <link href='https://fonts.googleapis.com/css?family=Open+Sans|Amaranth:400,700' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="/static/bootstrap.min.css">
         <link rel="stylesheet" href="/static/main.css">
+        <style>
+            #word_cloud_div{
+                width = 84%;
+                font-size: 20px;
+            }
+            .float-left {
+                float:left;
+                width:33%;
+            }
+        </style>
     </head>
 
     <body>
@@ -34,11 +44,11 @@
                 <input type="radio" name="algorithm" value="prototype" id="pbutton" class="radio" {% if algorithm == 'prototype' %}checked{% endif %}/>
                     <label for="pButton"> Prototype </label>
             </div>
-                
+
             <div style = "margin-left: 50px;">
                 <input type="radio" name="algorithm" value="final" id="fbutton" class="radio" {% if algorithm == '' or algorithm != 'prototype' %}checked{% endif %}/>
                     <label for="fbutton"> Final </label>
-            </div> 
+            </div>
         </form>
 
         <div class="form-inline global-search">
@@ -62,5 +72,158 @@
                 </span>
             </div> -->
         </div>
+        <div id="word_cloud_div">
+            <h4 align="center"></h4>
+            <table>
+            <tr>
+                <th>{{song_list.0.0}}</th>
+                <!--<th>{{song_list.1.0}}</th>
+                <th>{{song_list.2.0}}</th>-->
+            </tr>
+            </table>
+            <div id="word_cloud_1" align="center" class="float-left"></div>
+            <!--<div id="word_cloud_2" align="center" class="float-left"></div>
+            <div id="word_cloud_3" align="center" class="float-left"></div>-->
+        </div>
+
+        {% if output  %}
+        {% load static from staticfiles %}
+        <script src="http://d3js.org/d3.v3.min.js"></script>
+        <script src="https://www.jasondavies.com/wordcloud/cloud.min.js"></script>
+        {% static "d3.v3.min.js" as minjs %}
+        <script src="{{minjs}}"></script>
+        {% static "d3.layout.cloud.js" as cloudjs %}
+        <script src="{{cloudjs}}"></script>
+
+        <script>
+
+            // frequency_lists for top 3 movies
+            var frequency_list_1 = [];
+            {% for word_weight in word_cloud_list_1 %}
+            frequency_list_1.push({
+                "text": "{{word_weight.0}}",
+                "size": {{word_weight.1}}
+            });
+            {% endfor %}
+
+//            var frequency_list_2 = [];
+//            {% for word_weight in freq_2 %}
+//            frequency_list_2.push({
+//                "text": "{{word_weight.0}}",
+//                "size": {{word_weight.1}}
+//            });
+//            {% endfor %}
+//
+//            var frequency_list_3 = [];
+//            {% for word_weight in freq_3 %}
+//            frequency_list_3.push({
+//                "text": "{{word_weight.0}}",
+//                "size": {{word_weight.1}}
+//            });
+//            {% endfor %}
+//
+            // var frequency_list_1 = [{"text":"study","size":40},{"text":"motion","size":15},{"text":"forces","size":20},{"text":"electricity","size":25},{"text":"weight","size":10},{"text":"electrical","size":35}];
+            // var frequency_list_2 = [{"text":"WTF","size":40},{"text":"HAHA","size":15},{"text":"Mayday","size":20},{"text":"ZhangZhe","size":25},{"text":"light","size":10},{"text":"KingKong","size":35}];
+            // var frequency_list_3 = [{"text":"Batman","size":40},{"text":"TmanBa","size":15},{"text":"ManAtB","size":20},{"text":"Atman","size":25},{"text":"Manbat","size":10},{"text":"Bamant","size":35}];
+
+            var colors = ["#FFCC00", "#4CD964", "#34AADC", "#007AFF","#5856D6",
+            "#FF2D55","#FF2A68", "#FF9500", "#FF5E3A","#FFDB4C", "#FFCD02",
+            "#0BD318","#5AC8FB","1D62F0","#5856D6","C643FC", "2B2B2B","#898C90",
+            "#FF3B30","#FF9500","FFCC00","5856D6","8E8E93","5AD42","#FF3A2D",
+            "BDBEC2","1F1F21","FF1400","FF4981","5BCAFF","55EFCB","D6CEC3",
+            "1D77EF","81F3FD","#FF5B37","FB2B69","E0F8D8","#C86EDF"];
+
+            function rand_color(colors) {
+                return colors[Math.round(Math.random() * (colors.length - 1))];
+            }
+
+            // word_cloud_1
+            d3.layout.cloud().size([400, 400])
+                    .words(frequency_list_1)
+                    .rotate(0)
+                    .fontSize(function(d) { return d.size; })
+                    .on("end", draw1)
+                    .start();
+
+            function draw1(words) {
+
+            var svg =  d3.select("#word_cloud_1").append("svg")
+                        .attr("width", 400)
+                        .attr("height", 400)
+                        .attr("class", "wordcloud")
+                        .append("g")
+                        // without the transform, words words would get cutoff to the left and top, they would
+                        // appear outside of the SVG area
+                        .attr("transform", "translate(250,130)")
+                        .selectAll("text")
+                        .data(words)
+                        .enter().append("text")
+                        .style("font-size", function(d) { return d.size + "px"; })
+                        .style("fill", function(d) { return rand_color(colors); })
+                        .attr("transform", function(d) {
+                            return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+                        })
+                        .text(function(d) { return d.text; });
+            }
+
+            // word_cloud_2
+//            d3.layout.cloud().size([400, 400])
+//                    .words(frequency_list_2)
+//                    .rotate(0)
+//                    .fontSize(function(d) { return d.size; })
+//                    .on("end", draw2)
+//                    .start();
+//
+//            function draw2(words) {
+//
+//            var svg =  d3.select("#word_cloud_2").append("svg")
+//                        .attr("width", 400)
+//                        .attr("height", 400)
+//                        .attr("class", "wordcloud")
+//                        .append("g")
+//                        // without the transform, words words would get cutoff to the left and top, they would
+//                        // appear outside of the SVG area
+//                        .attr("transform", "translate(160,130)")
+//                        .selectAll("text")
+//                        .data(words)
+//                        .enter().append("text")
+//                        .style("font-size", function(d) { return d.size + "px"; })
+//                        .style("fill", function(d) { return rand_color(colors); })
+//                        .attr("transform", function(d) {
+//                            return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+//                        })
+//                        .text(function(d) { return d.text; });
+//            }
+//
+//            // word_cloud_3
+//            d3.layout.cloud().size([400, 400])
+//                    .words(frequency_list_3)
+//                    .rotate(0)
+//                    .fontSize(function(d) { return d.size; })
+//                    .on("end", draw3)
+//                    .start();
+//
+//            function draw3(words) {
+//
+//            var svg =  d3.select("#word_cloud_3").append("svg")
+//                        .attr("width", 400)
+//                        .attr("height", 400)
+//                        .attr("class", "wordcloud")
+//                        .append("g")
+//                        // without the transform, words words would get cutoff to the left and top, they would
+//                        // appear outside of the SVG area
+//                        .attr("transform", "translate(140,130)")
+//                        .selectAll("text")
+//                        .data(words)
+//                        .enter().append("text")
+//                        .style("font-size", function(d) { return d.size + "px"; })
+//                        .style("fill", function(d, i) { return rand_color(colors); })
+//                        .attr("transform", function(d) {
+//                            return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+//                        })
+//                        .text(function(d) { return d.text; });
+//            }
+        </script>
+        {% endif %}
     </body>
 </html>
