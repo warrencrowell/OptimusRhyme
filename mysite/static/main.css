@@ -11,6 +11,15 @@ text-align:center;
 body {
 padding-top: 15%;
 padding-bottom: 15px;
+color: #ffffff;
+font-family: "Open Sans", sans-serif;
+font-size: 150%;
+background-color: #1b1b1b;
+background-image: url("record-background-darker.jpg");
+background-repeat: no-repeat;
+background-attachment: fixed;
+background-position: center;
+background-size: cover;
 }
 .global-search {
 text-align:center;
@@ -30,9 +39,14 @@ top:2%;
 right:2%;
 }
 .btn{
-background-color: #4285F4;
+background-color: #0182E7;
 border: none
 }
+a:link {
+text-decoration: none;
+color: inherit;
+}
+a:visited{color:inherit}
 .step-links a{
-color: #4285F4;
+color: #0182E7;
 }

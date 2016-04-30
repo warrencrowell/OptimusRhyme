@@ -1,107 +1,135 @@
-import sklearn, re, nltk, base64, json, urllib2
+import sklearn, re, nltk, base64, json, urllib2, enchant
 import numpy as np
+import cPickle as pickle
 from sklearn.feature_extraction.text import TfidfVectorizer
-import os
+from sklearn.feature_extraction.text import CountVectorizer
 
 MIN_RESULTS = 30 # Minimum number of results needed for valid user input
-BASE_SEARCH_URL = "https://api.twitter.com/1.1/search/tweets.json?"
+BASE_SEARCH_URL = 'https://api.twitter.com/1.1/search/tweets.json?'
 
 class TweetMining(object):
-    def __init__(self, method = "tf_idf"):
-        self.twitter = None
+    def __init__(self, method = 'tf_idf_old'):
+        nltk.data.path.append('nltk_data/')
         self.method = method
         self.setup()
-        nltk.data.path.append('nltk_data/')
+        self.dict = enchant.Dict('en-us')
 
     # Sets up Twitter API connection
     def setup(self):
-        if os.path.isfile("config.py"):
-            config = {}
-            execfile("config.py", config)
-            consumer_key = config["consumer_key"]
-            consumer_secret = config["consumer_secret"]
-        else:
-            consumer_key = os.getenv('CONSUMER_KEY')
-            consumer_secret = os.getenv('CONSUMER_SECRET')
+        consumer_key = os.getenv('CONSUMER_KEY')
+        consumer_secret = os.getenv('CONSUMER_SECRET')
 
-        bearer_token = "%s:%s" % (consumer_key, consumer_secret)
+        bearer_token = '%s:%s' % (consumer_key, consumer_secret)
         bearer_token_64 = base64.b64encode(bearer_token)
 
-        token_request = urllib2.Request("https://api.twitter.com/oauth2/token")
-        token_request.add_header("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8")
-        token_request.add_header("Authorization", "Basic %s" % bearer_token_64)
-        token_request.data = "grant_type=client_credentials"
+        token_request = urllib2.Request('https://api.twitter.com/oauth2/token')
+        token_request.add_header('Content-Type', 'application/x-www-form-urlencoded;charset=UTF-8')
+        token_request.add_header('Authorization', 'Basic %s' % bearer_token_64)
+        token_request.data = 'grant_type=client_credentials'
 
         token_response = urllib2.urlopen(token_request)
         token_contents = token_response.read()
         token_data = json.loads(token_contents)
-        self.access_token = token_data["access_token"]
+        self.access_token = token_data['access_token']
 
-        if self.method == "word_embeddings":
-            self.vectors = {}
-            with open("glove.twitter.27B.25d.txt", 'r') as f:
-                for line in f:
-                    vals = line.rstrip().split(" ")
-                    self.vectors[vals[0]] = np.asarray([float(x) for x in vals[1:]])
+        if self.method == 'tf_idf_new':
+            with open('project_template/idf.pickle', 'rb') as handle:
+                self.idf = pickle.load(handle)
 
     # Returns list of at most num_words topical words for the given hashtag_set
-    # For a hashtag_set [h1, h2], we perform the query "#h1 OR #h2"
     def get_topical_words(self, hashtag_set, num_words = 20):
-        statuses = [t["text"] for t in self.get_query(hashtag_set)["statuses"]]
+        hashtag_set = self.cleanup_tags(hashtag_set)
+        statuses = [t['text'] for t in self.get_tweets(hashtag_set, 500 * len(hashtag_set))]
         if len(statuses) < MIN_RESULTS:
-            raise Exception("Error: Not enough tweets returned by given hashtags")
-        self.process_tweets(statuses)
+            return []
 
-        if self.method == "tf_idf":
-            vect = TfidfVectorizer(min_df = 2, stop_words = "english", strip_accents = "ascii")
+        if self.method == 'tf_idf_old':
+            self.process_tweets(statuses)
+            vect = TfidfVectorizer(min_df = 2, stop_words = 'english', strip_accents = 'ascii')
             matrix = vect.fit_transform(statuses)
             top_indices = np.argsort(vect.idf_)[::-1]
             features = vect.get_feature_names()
             return [features[i] for i in top_indices[:num_words]]
 
-        elif self.method == "word_embeddings":
-            for status in statuses:
-                words = nltk.word_tokenize(status)
-                for word in words:
-                    if word in self.vectors:
-                        topic_vector = np.add(topic_vector, self.vectors[word])
-            raise Exception("Error: Word embeddings not implemented yet")
+        elif self.method == 'tf_idf_new':
+            self.process_tweets(statuses, nouns_only = False)
+
+            getIDF = lambda word : self.idf[word] if word in self.idf else 0
+            vect = CountVectorizer(stop_words = 'english', strip_accents = 'ascii')
+
+            tf = vect.fit_transform([' '.join(statuses)]).toarray()
+            features = vect.get_feature_names()
+            idf_vals = np.array([np.log(1600000.0 / (1 + getIDF(word))) for word in features])
+            tfidf = np.multiply(tf, idf_vals)
+
+            top_words = [word for word in hashtag_set if self.dict.check(word)]
+            top_indices = np.argsort(tfidf[0])[::-1]
+            for i in top_indices:
+                word = features[i]
+                if word not in top_words and self.dict.check(word):
+                    top_words.append(word)
+                if len(top_words) == num_words:
+                    break
+            return top_words
 
         else:
-            raise Exception("Error: Invalid method specified")
+            raise Exception('Error: Invalid method specified')
+
+    # Helper function for get_topical_words
+    # Cleans up hashtag list input by stripping hashtags if they exist
+    def cleanup_tags(self, hashtags):
+        result = []
+        for h in hashtags:
+            result.append(h.strip('#').strip())
+        return result
 
     # Helper function for get_topical_words
     # Returns dict of keys "status_metadata" and "statuses" from Twitter API
     #   => "statuses" maps to a list of dicts; access "text" key to get status text
     # hashtag_set is a list of hashtags to search for (don't include #)
-    def get_query(self, hashtag_set):
-        query = "q="
+    def get_tweets(self, hashtag_set, num_tweets = 500):
+        num_queries = num_tweets / 100
+        extra_tweets = num_tweets % 100
+
+        base_query = BASE_SEARCH_URL + 'q='
         for i in range(len(hashtag_set)):
-            query += "%23" + hashtag_set[i]
+            base_query += '%23' + hashtag_set[i]
             if i < len(hashtag_set) - 1:
-                query += "%20OR%20"
+                query += '%20OR%20'
+        base_query += '&lang=en&result_type=recent&count=100'
 
-        query_url = BASE_SEARCH_URL + query + "&result_type=mixed&lang=en&count=100"
-        request = urllib2.Request(query_url)
-        request.add_header("Authorization", "Bearer %s" % self.access_token)
+        def callAPI(query_url):
+            request = urllib2.Request(query_url)
+            request.add_header('Authorization', 'Bearer %s' % self.access_token)
+            response = urllib2.urlopen(request)
+            contents = response.read()
+            return json.loads(contents)
 
-        response = urllib2.urlopen(request)
-        contents = response.read()
-        return json.loads(contents)
+        result = []
+        query = base_query
+        for q in range(num_queries):
+            statuses = callAPI(query)['statuses']
+            result.extend(statuses)
+            minID = min([status['id'] for status in statuses])
+            query = base_query + '&max_id=' + str(minID)
+
+        if extra_tweets > 0 and not out_of_tweets:
+            query = re.sub(r'&count=\d+', '', query) + '&count=' + str(extra_tweets)
+            result.extend(callAPI(query)['statuses'])
+
+        return result
 
     # Helper method for get_topical_words
     # Processes statuses in-place by removing irrelevant components
-    def process_tweets(self, statuses):
+    def process_tweets(self, statuses, nouns_only = True):
         for i in range(len(statuses)):
-            statuses[i] = re.sub(r"\S*/\S*", "", statuses[i]) # Links
-            statuses[i] = re.sub(r"http\S*", "", statuses[i]) # Hanging https
-            statuses[i] = re.sub(r"#", "", statuses[i]) # Hashtag symbols
-            statuses[i] = re.sub(r"(RT)*( )?@\S*", "", statuses[i]) # RT, @user
-            statuses[i] = re.sub(r"\S*\d+\S*", "", statuses[i]) # Numerical
+            statuses[i] = re.sub(r'\S*/\S*', '', statuses[i]) # Links
+            statuses[i] = re.sub(r'htt\S*', '', statuses[i]) # Hanging https
+            statuses[i] = re.sub(r'#\S*', '', statuses[i]) # Hashtag symbols
+            statuses[i] = re.sub(r'(RT)*( )?@\S*', '', statuses[i]) # RT, @user
+            statuses[i] = re.sub(r'\S*\d+\S*', '', statuses[i]) # Numerical
+            statuses[i] = re.sub(r"\w+'[^s ]+", '', statuses[i]) # Contractions
 
-            pos_info = nltk.pos_tag(nltk.word_tokenize(statuses[i]))
-            statuses[i] = " ".join([word[0] for word in pos_info if "NN" in word[1]])
-
-# TM = TweetMining()
-# words = TM.get_topical_words(["sandwich"])
-# print words
+            if nouns_only:
+                pos_info = nltk.pos_tag(nltk.word_tokenize(statuses[i]))
+                statuses[i] = ' '.join([word[0] for word in pos_info if 'NN' in word[1]])
