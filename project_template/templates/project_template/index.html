@@ -14,84 +14,6 @@
                 float:left;
                 width:33%;
             }
-
-            @media (min-width: 1200px) {
-.container { max-width: 970px; }
-}
-@media (min-width:400px) {
-    .global-search {
-        padding: 20px 0;
-        text-align:center;
-    }
-    body {
-        padding-top: 15%;
-        padding-bottom: 15px;
-        color: #ffffff;
-        font-family: "Open Sans", sans-serif;
-        font-size: 150%;
-        background-color: #1b1b1b;
-        background-image: url("record-background-darker.jpg");
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-        background-position: center;
-        background-size: cover;
-    }
-    .global-search {
-        text-align:center;
-        padding:10px;
-    }
-    .global-search .form-control {
-        width:500px;
-    }
-    .global-search * {
-        display:inline-block;
-        margin-bottom:0;
-    }
-}
-.topcorner{
-    position:absolute;
-    top:2%;
-    right:2%;
-}
-.btn{
-    background-color: #0182E7;
-    border: none
-}
-a:link {
-    text-decoration: none;
-    color: inherit;
-}
-a:visited{ color:inherit }
-.step-links a{ color: #0182E7; }
-
-input[type=range] {
-    -webkit-appearance: none;
-    width: 50%;
-    margin: 13.8px 0;
-}
-input[type=range]:focus {
-    outline: none;
-}
-input[type=range]::-webkit-slider-runnable-track {
-    width: 100%;
-    height: 8.4px;
-    cursor: pointer;
-    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.31), 0px 0px 1px rgba(13, 13, 13, 0.31);
-    background: #55acee;
-    border-radius: 1.3px;
-    border: 0.2px solid rgba(27, 27, 27, 0);
-}
-input[type=range]::-webkit-slider-thumb {
-    box-shadow: 1px 1px 1px #55acee, 0px 0px 1px #6cb7f0;
-    border: 1px solid rgba(0, 0, 0, 0);
-    height: 25px;
-    width: 16px;
-    border-radius: 3px;
-    background: #ffffff;
-    cursor: pointer;
-    -webkit-appearance: none;
-    margin-top: -10px;
-}
         </style>
     </head>
 
@@ -130,31 +52,43 @@ input[type=range]::-webkit-slider-thumb {
             </div>
 
             <br></br>
+            <div style = "width: 270px; margin-left: 20px; margin-right: 20px;">
+                <center>Rhyme Importance</center><br>
+                <input type="range" name="rhymeInputName" id="rhymeInputId" value="1" min="0" max="5" step="0.01" oninput="rhymeOutputId.value = rhymeInputId.value">
+                <output name="rhymeOutputName" id="rhymeOutputId">1</output>
+            </div>
 
-            <center><b>Rhyme Importance</b></center><br>
-            <input type="range" name="rhymeInputName" id="rhymeInputId" value="1" min="0" max="5" step="0.01" oninput="rhymeOutputId.value = rhymeInputId.value">
-            <output name="rhymeOutputName" id="rhymeOutputId">1</output>
+            <div style = "width: 270px; margin-left: 20px; margin-right: 20px;">
+                <center>Part of Speech Importance</center><br>
+                <input type="range" name="posInputName" id="posInputId" value="1" min="0" max="5" step="0.01" oninput="posOutputId.value = posInputId.value">
+                <output name="posOutputName" id="posOutputId">1</output>
+            </div>
 
-            <center><b>Part of Speech Importance</b></center><br>
-            <input type="range" name="posInputName" id="posInputId" value="1" min="0" max="5" step="0.01" oninput="posOutputId.value = posInputId.value">
-            <output name="posOutputName" id="posOutputId">1</output>
+            <div style = "width: 270px; margin-left: 20px; margin-right: 20px;">
+                <center>Syllable Count Difference Importance</center><br>
+                <input type="range" name="syllableInputName" id="syllableInputId" value="1" min="0" max="5" step="0.01" oninput="syllableOutputId.value = syllableInputId.value">
+                <output name="syllableOutputName" id="syllableOutputId">1</output>
+            </div>
 
-            <center><b>Syllable Count Difference Importance</b></center><br>
-            <input type="range" name="syllableInputName" id="syllableInputId" value="1" min="0" max="5" step="0.01" oninput="syllableOutputId.value = syllableInputId.value">
-            <output name="syllableOutputName" id="syllableOutputId">1</output>
+            <br></br>
 
-            <center><b>Hashtag Relevance</b></center><br>
-            <input type="range" name="hashtagInputName" id="hashtagInputId" value="1" min="0" max="5" step="0.01" oninput="hashtagOutputId.value = hashtagInputId.value">
-            <output name="hashtagOutputName" id="hashtagOutputId">1</output>
+            <div style = "width: 270px; margin-left: 20px; margin-right: 20px;">
+                <center>Hashtag Relevance</center><br>
+                <input type="range" name="hashtagInputName" id="hashtagInputId" value="1" min="0" max="5" step="0.01" oninput="hashtagOutputId.value = hashtagInputId.value">
+                <output name="hashtagOutputName" id="hashtagOutputId">1</output>
+            </div>
 
-            <center><b>Lyric Relevance</b></center><br>
-            <input type="range" name="lyricInputName" id="lyricInputId" value="1" min="0" max="5" step="0.01" oninput="lyricOutputId.value = lyricInputId.value">
-            <output name="lyricOutputName" id="lyricOutputId">1</output>
+            <div style = "width: 270px; margin-left: 20px; margin-right: 20px;">
+                <center>Lyric Relevance</center><br>
+                <input type="range" name="lyricInputName" id="lyricInputId" value="1" min="0" max="5" step="0.01" oninput="lyricOutputId.value = lyricInputId.value">
+                <output name="lyricOutputName" id="lyricOutputId">1</output>
+            </div>
 
-            <center><b>Word Substitution Similarity</b></center><br>
-            <input type="range" name="wordSubInputName" id="wordSubInputId" value="1" min="0" max="5" step="0.01" oninput="wordSubOutputId.value = wordSubInputId.value">
-            <output name="wordSubOutputName" id="wordSubOutputId">1</output>
-                        
+            <div style = "width: 270px; margin-left: 20px; margin-right: 20px;">
+                <center>Word Substitution Similarity</center><br>
+                <input type="range" name="wordSubInputName" id="wordSubInputId" value="1" min="0" max="5" step="0.01" oninput="wordSubOutputId.value = wordSubInputId.value">
+                <output name="wordSubOutputName" id="wordSubOutputId">1</output>
+            </div>
 
         </form>
 
