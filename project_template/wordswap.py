@@ -1,6 +1,16 @@
 import nltk
 from nltk import wordnet as wn
 import random
+import cPickle as pickle
+import numpy as np
+
+f = open('pho_dict.p', 'rb')
+pho_dict = pickle.load(f)
+f.close()
+
+f = open('is_vowel.p', 'rb')
+is_vowel = pickle.load(f)
+f.close()
 
 REMOVE_SYMS = ['[', ']', '(', ')']
 MERGE_SYMS = [',', '\'', '!', '.', '?']
@@ -17,7 +27,6 @@ def compare_word_similarities(word1,word2):
         return sym
     except:
         return 0.0
-
 
 def replace_random_word(line, candidate_words):
     new_line = list(line)
@@ -55,8 +64,6 @@ def merge_punctuation(line, start_idx):
                 return line[:i]
     return line
 
-
-
 def format_lines(lines):
     new_lines = list(lines)
     for i in range(len(new_lines)):
@@ -66,3 +73,50 @@ def format_lines(lines):
         curr_line[0] = curr_line[0][0].upper() + curr_line[0][1:]
         new_lines[i] = " ".join(curr_line)
     return new_lines
+  
+def rhyme_quality(pho_dict, word_a, word_b):
+    vowel_weight = 3
+    if not (word_a.upper() in pho_dict and word_b.upper() in pho_dict):
+        return None
+    phos_a = pho_dict[word_a.upper()]
+    phos_b = pho_dict[word_b.upper()]
+    edit_dists = np.zeros((len(phos_a) + 1, len(phos_b) + 1))
+
+    for i in range(1,len(phos_a) + 1):
+        if is_vowel[phos_a[i-1]]:
+            edit_dists[i,0] = edit_dists[i-1,0] + vowel_weight
+        else:
+            edit_dists[i,0] = edit_dists[i-1,0] + 1
+
+    for j in range(1,len(phos_b) + 1):
+        if is_vowel[phos_b[j-1]]:
+            edit_dists[0,j] = edit_dists[0,j-1] + vowel_weight
+        else:
+            edit_dists[0,j] = edit_dists[0,j-1] + 1
+    
+    for i in range(1,len(phos_a) + 1):
+        for j in range(1,len(phos_b) + 1):
+            if phos_a[i-1] == phos_b[j-1]:
+                edit_dists[i,j] = edit_dists[i-1,j-1]
+            elif is_vowel[phos_a[i-1]] or is_vowel[phos_b[j-1]]:
+                edit_dists[i,j] = min(vowel_weight + edit_dists[i-1,j], 
+                                      vowel_weight + edit_dists[i,j-1], 
+                                  2 * vowel_weight + edit_dists[i-1,j-1])
+            else:
+                edit_dists[i,j] = min(1 + edit_dists[i-1,j], 
+                                      1 + edit_dists[i,j-1], 
+                                      2 + edit_dists[i-1,j-1])
+
+    worst_dist = edit_dists[len(phos_a),0] + edit_dists[0,len(phos_b)]
+    best_dist = edit_dists[len(phos_a),len(phos_b)]
+    return worst_dist / float(best_dist)
+
+def num_syllables(pho_dict, word):
+    if not word.upper() in pho_dict:
+        return None
+    else:
+        num_syl = 0
+        for pho in pho_dict[word.upper()]:
+            if is_vowel[pho]:
+                num_syl += 1
+        return num_syl
