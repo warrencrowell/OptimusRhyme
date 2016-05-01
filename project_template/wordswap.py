@@ -27,22 +27,30 @@ else:
     f.close()
 
 def wordswap(line, tweet_words, weights=[1,1,1,1,1,1]):
-    # print line
-    print tweet_words
     new_line = list(line)
     swaps = []
     for i in range(len(new_line)):
-        for j in range(i+1,len(tweet_words)):
-            swaps.append((i,j))
-    # print swaps
-    scores = np.zeros((len(swaps),6))
+        if not (line[i] in REMOVE_SYMS or line[i] in MERGE_SYMS):
+            for j in range(i+1,len(tweet_words)):
+                swaps.append((i,j))
+    scores = np.zeros((len(swaps),1))
 
-    # Rhyme scores
+    # RHYME SCORES
     for i, swap in enumerate(swaps):
-        scores[i,0] = rhyme_quality(pho_dict, line[swap[0]], tweet_words[swap[1]])
-    scores = scores / np.sum(scores[:,0])
-    # print scores
+        rhyme_score = rhyme_quality(pho_dict, line[swap[0]], tweet_words[swap[1]][0])
+        if rhyme_score:
+            scores[i,0] = rhyme_score
+        else:
+            scores[i,0] = 0
 
+    # MAKE_SWAP
+    best_swap = swaps[np.argmax(scores[:,0])]
+    new_line[best_swap[0]] = ('<div class="substitution">' + 
+                               tweet_words[best_swap[1]][0] +
+                               '<span class="hovertext">' + 
+                               line[best_swap[0]] +
+                               'text</span></div>')
+    return new_line
 
 def compare_word_similarities(word1,word2):
     syns1 = wn.synsets(word1)
