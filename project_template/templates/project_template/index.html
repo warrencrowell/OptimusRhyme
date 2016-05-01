@@ -54,37 +54,37 @@
             <br></br>
 
             <div style = "max-width: 950px">
-                <div style = "width: 270px; margin: 20px;">
+                <div style = "width: 270px; margin: 10px 20px;">
                     <center>Rhyme Importance</center><br>
                     <input type="range" name="rhymeInputName" id="rhymeInputId" value="1" min="0" max="5" step="0.01" oninput="rhymeOutputId.value = rhymeInputId.value">
                     <output name="rhymeOutputName" id="rhymeOutputId">1</output>
                 </div>
 
-                <div style = "width: 270px; margin: 20px;">
+                <div style = "width: 270px; margin: 10px 20px;">
                     <center>Part of Speech Importance</center><br>
                     <input type="range" name="posInputName" id="posInputId" value="1" min="0" max="5" step="0.01" oninput="posOutputId.value = posInputId.value">
                     <output name="posOutputName" id="posOutputId">1</output>
                 </div>
 
-                <div style = "width: 270px; margin: 20px;">
+                <div style = "width: 270px; margin: 10px 20px;">
                     <center>Syllable Count Difference Importance</center><br>
                     <input type="range" name="syllableInputName" id="syllableInputId" value="1" min="0" max="5" step="0.01" oninput="syllableOutputId.value = syllableInputId.value">
                     <output name="syllableOutputName" id="syllableOutputId">1</output>
                 </div>
 
-                <div style = "width: 270px; margin: 20px;">
+                <div style = "width: 270px; margin: 10px 20px;">
                     <center>Hashtag Relevance</center><br>
                     <input type="range" name="hashtagInputName" id="hashtagInputId" value="1" min="0" max="5" step="0.01" oninput="hashtagOutputId.value = hashtagInputId.value">
                     <output name="hashtagOutputName" id="hashtagOutputId">1</output>
                 </div>
 
-                <div style = "width: 270px; margin: 20px;">
+                <div style = "width: 270px; margin: 10px 20px;">
                     <center>Lyric Relevance</center><br>
                     <input type="range" name="lyricInputName" id="lyricInputId" value="1" min="0" max="5" step="0.01" oninput="lyricOutputId.value = lyricInputId.value">
                     <output name="lyricOutputName" id="lyricOutputId">1</output>
                 </div>
 
-                <div style = "width: 270px; margin: 20px;">
+                <div style = "width: 270px; margin: 10px 20px;">
                     <center>Word Substitution Similarity</center><br>
                     <input type="range" name="wordSubInputName" id="wordSubInputId" value="1" min="0" max="5" step="0.01" oninput="wordSubOutputId.value = wordSubInputId.value">
                     <output name="wordSubOutputName" id="wordSubOutputId">1</output>
@@ -150,12 +150,7 @@
             });
             {% endfor %}
 
-            var colors = ["#FFCC00", "#4CD964", "#34AADC", "#007AFF","#5856D6",
-            "#FF2D55","#FF2A68", "#FF9500", "#FF5E3A","#FFDB4C", "#FFCD02",
-            "#0BD318","#5AC8FB","1D62F0","#5856D6","C643FC", "2B2B2B","#898C90",
-            "#FF3B30","#FF9500","FFCC00","5856D6","8E8E93","5AD42","#FF3A2D",
-            "BDBEC2","1F1F21","FF1400","FF4981","5BCAFF","55EFCB","D6CEC3",
-            "1D77EF","81F3FD","#FF5B37","FB2B69","E0F8D8","#C86EDF"];
+            var colors = ["#023fa5", "#7d87b9", "#bec1d4", "#d6bcc0", "#bb7784", "#8e063b", "#4a6fe3", "#8595e1", "#b5bbe3", "#e6afb9", "#e07b91", "#d33f6a", "#11c638", "#8dd593", "#c6dec7", "#ead3c6", "#f0b98d", "#ef9708", "#0fcfc0", "#9cded6", "#d5eae7", "#f3e1eb", "#f6c4e1", "#f79cd4"];
 
             function rand_color(colors) {
                 return colors[Math.round(Math.random() * (colors.length - 1))];
@@ -165,29 +160,30 @@
             d3.layout.cloud().size([600, 600])
                     .words(frequency_list_1)
                     .rotate(0)
-                    .fontSize(function(d) { return d.size; })
+                    .fontSize(function(d) { return Math.max(d.size, 60); })
                     .on("end", draw1)
                     .start();
 
             function draw1(words) {
 
-            var svg =  d3.select("#word_cloud_1").append("svg")
-                        .attr("width", 600)
-                        .attr("height", 600)
-                        .attr("class", "wordcloud")
-                        .append("g")
-                        // without the transform, words words would get cutoff to the left and top, they would
-                        // appear outside of the SVG area
-                        .attr("transform", "translate(250,300)")
-                        .selectAll("text")
-                        .data(words)
-                        .enter().append("text")
-                        .style("font-size", function(d) { return d.size + "px"; })
-                        .style("fill", function(d) { return rand_color(colors); })
-                        .attr("transform", function(d) {
-                            return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
-                        })
-                        .text(function(d) { return d.text; });
+                var svg =  d3.select("#word_cloud_1").append("svg")
+                            .attr("width", 600)
+                            .attr("height", 600)
+                            .attr("class", "wordcloud")
+                            .append("g")
+                            // without the transform, words words would get cutoff to the left and top, they would
+                            // appear outside of the SVG area
+                            .attr("transform", "translate(250,300)")
+                            .selectAll("text")
+                            .data(words)
+                            .enter().append("text")
+                            .style("font-size", function(d) { return d.size + "px"; })
+                            .style("font-family", "Amaranth")
+                            .style("fill", function(d) { return rand_color(colors); })
+                            .attr("transform", function(d) {
+                                return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+                            })
+                            .text(function(d) { return d.text; });
             }
 
         </script>
