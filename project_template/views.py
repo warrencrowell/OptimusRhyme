@@ -61,7 +61,8 @@ def index(request):
 
         elif algorithm == 'final':
             TM = TweetMining(method = 'tf_idf_new')
-            tweetwords, word_frequencies = TM.get_topical_words(hashtags)
+            word_frequencies = TM.get_topical_words(hashtags)
+            tweetwords = [w for w,f in word_frequencies]
 
             if len(tweetwords) == 0:
                 output_list = ['Not enough tweets are associated with the input hashtag(s). Please try again.']
