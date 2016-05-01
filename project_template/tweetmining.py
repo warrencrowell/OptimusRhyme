@@ -32,7 +32,7 @@ class TweetMining(object):
         token_data = json.loads(token_contents)
         self.access_token = token_data['access_token']
 
-        with open('project_template/pho_dict.p', 'rb') as handle:
+        with open('project_template/smaller_pho_dict.p', 'rb') as handle:
             self.dict = pickle.load(handle)
 
         if self.method == 'tf_idf_new':
