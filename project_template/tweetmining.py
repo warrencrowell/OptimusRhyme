@@ -85,7 +85,7 @@ class TweetMining(object):
             for i in top_indices:
                 word = features[i]
                 if word not in top_words and word.upper() in self.dict:
-                    top_words.append((word, tfidf[0][i])
+                    top_words.append((word, tfidf[0][i]))
                 if len(top_words) == num_words:
                     break
 
