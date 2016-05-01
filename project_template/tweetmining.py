@@ -80,8 +80,8 @@ class TweetMining(object):
             idf_vals = np.array([np.log(1600000.0 / (1 + getIDF(word))) for word in features])
             tfidf = np.multiply(tf, idf_vals)
 
-            top_words = [word for word in hashtag_set if word.upper() in self.dict]
             top_indices = np.argsort(tfidf[0])[::-1]
+            top_words = [(word, tfidf[0][top_indices[0]] * 1.01) for word in hashtag_set if word.upper() in self.dict]
             for i in top_indices:
                 word = features[i]
                 if word not in top_words and word.upper() in self.dict:
