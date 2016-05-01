@@ -3,14 +3,25 @@ from nltk import wordnet as wn
 import random
 import cPickle as pickle
 import numpy as np
+import os
 
-f = open('pho_dict.p', 'rb')
-pho_dict = pickle.load(f)
-f.close()
+if os.path.isfile('pho_dict.p'):
+    f = open('pho_dict.p', 'rb')
+    pho_dict = pickle.load(f)
+    f.close()
+else:
+    f = open('project_template/pho_dict.p', 'rb')
+    pho_dict = pickle.load(f)
+    f.close()
 
-f = open('is_vowel.p', 'rb')
-is_vowel = pickle.load(f)
-f.close()
+if os.path.isfile('is_vowel.p'):
+    f = open('is_vowel.p', 'rb')
+    is_vowel = pickle.load(f)
+    f.close()
+else:
+    f = open('project_template/is_vowel.p', 'rb')
+    is_vowel = pickle.load(f)
+    f.close()
 
 REMOVE_SYMS = ['[', ']', '(', ')']
 MERGE_SYMS = [',', '\'', '!', '.', '?']

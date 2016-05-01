@@ -11,6 +11,13 @@ from linegen import *
 from wordswap import *
 import os
 
+### Load corpus ###
+if os.path.isfile('dataset.json'):
+    json_data = open('dataset.json').read()
+else:
+    json_data = open('project_template/dataset.json').read()
+lyrics = json.loads(json_data)
+
 # Create your views here.
 def index(request):
     output_list = ''
@@ -30,12 +37,6 @@ def index(request):
             if len(tweetwords) == 0:
                 output_list = ['Not enough tweets are associated with the input hashtag(s). Please try again.']
             else:
-                ### Load corpus ###
-                if os.path.isfile('dataset.json'):
-                    json_data = open('dataset.json').read()
-                else:
-                    json_data = open('project_template/dataset.json').read()
-                lyrics = json.loads(json_data)
 
                 ### Generate lyrics
                 output_list = [replace_random_word(get_random_line(lyrics),tweetwords)]
@@ -65,13 +66,6 @@ def index(request):
             if len(tweetwords) == 0:
                 output_list = ['Not enough tweets are associated with the input hashtag(s). Please try again.']
             else:
-                ### Load corpus ###
-                if os.path.isfile('dataset.json'):
-                    json_data = open('dataset.json').read()
-                else:
-                    json_data = open('project_template/dataset.json').read()
-                lyrics = json.loads(json_data)
-
                 ### Generate lyrics
                 output_list = [replace_random_word(get_random_line(lyrics),tweetwords)]
                 for i in range(7):
