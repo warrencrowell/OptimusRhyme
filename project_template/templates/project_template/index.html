@@ -160,7 +160,7 @@
             d3.layout.cloud().size([600, 600])
                     .words(frequency_list_1)
                     .rotate(0)
-                    .fontSize(function(d) { return Math.max(d.size, 60); })
+                    .fontSize(function(d) { return Math.max(Math.pow(d.size, 2) / 3000; })
                     .on("end", draw1)
                     .start();
 
