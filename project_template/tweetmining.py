@@ -3,6 +3,7 @@ import numpy as np
 import cPickle as pickle
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_extraction.text import CountVectorizer
+import os
 
 MIN_RESULTS = 30 # Minimum number of results needed for valid user input
 BASE_SEARCH_URL = 'https://api.twitter.com/1.1/search/tweets.json?'

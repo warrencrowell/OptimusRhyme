@@ -5,6 +5,9 @@ import cPickle as pickle
 import numpy as np
 import os
 
+REMOVE_SYMS = ['[', ']', '(', ')']
+MERGE_SYMS = [',', '\'', '!', '.', '?']
+
 if os.path.isfile('pho_dict.p'):
     f = open('pho_dict.p', 'rb')
     pho_dict = pickle.load(f)
@@ -23,8 +26,21 @@ else:
     is_vowel = pickle.load(f)
     f.close()
 
-REMOVE_SYMS = ['[', ']', '(', ')']
-MERGE_SYMS = [',', '\'', '!', '.', '?']
+def wordswap(line, tweet_words, weights=[1,1,1,1,1,1]):
+    new_line = list(line)
+    swaps = []
+    for i in range(len(new_line)):
+        for j in range(i+1,len(tweet_words)):
+            swaps.append((i,j))
+    print swaps
+    scores = np.zeros((len(swap_idxs),6))
+
+    # Rhyme scores
+    for i, swap in enumerate(swaps):
+        scores[i,0] = rhyme_quality(pho_dict, line[swap[0]], tweet_words[swap[1]])
+    scores = scores / np.sum(scores[:,0])
+    print scores
+
 
 def compare_word_similarities(word1,word2):
     syns1 = wn.synsets(word1)
@@ -39,6 +55,7 @@ def compare_word_similarities(word1,word2):
     except:
         return 0.0
 
+# OLD METHOD
 def replace_random_word(line, candidate_words):
     new_line = list(line)
     pos = nltk.pos_tag(line)
