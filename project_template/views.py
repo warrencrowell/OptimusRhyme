@@ -60,21 +60,24 @@ def index(request):
                             })
 
         elif algorithm == 'final':
-            TM = TweetMining(method = 'tf_idf_new')
-            word_frequencies = TM.get_topical_words(hashtags)
-            tweetwords = [w for w,f in word_frequencies]
+            ### Get tweet words ###
+            TM = TweetMining(method="tf_idf_new")
+            tweetwords = TM.get_topical_words(hashtags)
 
-            if len(tweetwords) == 0:
-                output_list = ['Not enough tweets are associated with the input hashtag(s). Please try again.']
+            ### Load corpus ###
+            if os.path.isfile('dataset.json'):
+                json_data = open('dataset.json').read()
             else:
-                ### Generate lyrics
-                output_list = [replace_random_word(get_random_line(lyrics),tweetwords)]
-                for i in range(7):
-                    line = get_random_line(lyrics, output_list[-1])
-                    altered_line = replace_random_word(line, tweetwords)
-                    output_list.append(altered_line)
+                json_data = open('project_template/dataset.json').read()
+            lyrics = json.loads(json_data)
 
-                output_list = format_lines(output_list)
+            ### Generate lyrics
+            output_list = [wordswap(get_random_line(lyrics),tweetwords)]
+            for i in range(7):
+                line = get_random_line(lyrics, output_list[-1])
+                altered_line = wordswap(line, tweetwords)
+                output_list.append(altered_line)
+            output_list = format_lines(output_list)
             
             ### End of our code ###
             paginator = Paginator(output_list, 17)
