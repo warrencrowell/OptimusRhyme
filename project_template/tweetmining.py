@@ -16,8 +16,14 @@ class TweetMining(object):
 
     # Sets up Twitter API connection
     def setup(self):
-        consumer_key = os.getenv('CONSUMER_KEY')
-        consumer_secret = os.getenv('CONSUMER_SECRET')
+        if os.path.isfile("config.py"):
+            config = {}
+            execfile("config.py", config)
+            consumer_key = config["consumer_key"]
+            consumer_secret = config["consumer_secret"]
+        else:
+            consumer_key = os.getenv('CONSUMER_KEY')
+            consumer_secret = os.getenv('CONSUMER_SECRET')
 
         bearer_token = '%s:%s' % (consumer_key, consumer_secret)
         bearer_token_64 = base64.b64encode(bearer_token)
@@ -32,12 +38,21 @@ class TweetMining(object):
         token_data = json.loads(token_contents)
         self.access_token = token_data['access_token']
 
-        with open('project_template/smaller_pho_dict.p', 'rb') as handle:
-            self.dict = pickle.load(handle)
+        if os.path.isfile("smaller_pho_dict.p"):
+            with open('smaller_pho_dict.p', 'rb') as handle:
+                self.dict = pickle.load(handle)
+        else:
+            with open('project_template/smaller_pho_dict.p', 'rb') as handle:
+                self.dict = pickle.load(handle)
+
 
         if self.method == 'tf_idf_new':
-            with open('project_template/idf.pickle', 'rb') as handle:
-                self.idf = pickle.load(handle)
+            if os.path.isfile("idf.pickle"):
+                with open('idf.pickle', 'rb') as handle:
+                    self.idf = pickle.load(handle)
+            else:
+                with open('project_template/idf.pickle', 'rb') as handle:
+                    self.idf = pickle.load(handle)
 
     # Returns list of at most num_words topical words for the given hashtag_set
     def get_topical_words(self, hashtag_set, num_words = 20):

@@ -27,19 +27,21 @@ else:
     f.close()
 
 def wordswap(line, tweet_words, weights=[1,1,1,1,1,1]):
+    # print line
+    print tweet_words
     new_line = list(line)
     swaps = []
     for i in range(len(new_line)):
         for j in range(i+1,len(tweet_words)):
             swaps.append((i,j))
-    print swaps
-    scores = np.zeros((len(swap_idxs),6))
+    # print swaps
+    scores = np.zeros((len(swaps),6))
 
     # Rhyme scores
     for i, swap in enumerate(swaps):
         scores[i,0] = rhyme_quality(pho_dict, line[swap[0]], tweet_words[swap[1]])
     scores = scores / np.sum(scores[:,0])
-    print scores
+    # print scores
 
 
 def compare_word_similarities(word1,word2):
