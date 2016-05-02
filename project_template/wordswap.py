@@ -30,7 +30,7 @@ def wordswap(line, tweet_words, weights=[1,1,1,1,1,1]):
     new_line = list(line)
     swaps = []
     for i in range(len(new_line)):
-        if not (line[i] in REMOVE_SYMS or line[i] in MERGE_SYMS):
+        if not True in [sym in line[i] for sym in (MERGE_SYMS + REMOVE_SYMS)]:
             for j in range(i+1,len(tweet_words)):
                 swaps.append((i,j))
     scores = np.zeros((len(swaps),1))
