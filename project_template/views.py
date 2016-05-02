@@ -37,6 +37,12 @@ def index(request):
             if len(tweetwords) == 0:
                 output_list = ['Not enough tweets are associated with the input hashtag(s). Please try again.']
             else:
+                ### Load corpus ###
+                if os.path.isfile('dataset.json'):
+                    json_data = open('dataset.json').read()
+                else:
+                    json_data = open('project_template/dataset.json').read()
+                lyrics = json.loads(json_data)
 
                 ### Generate lyrics
                 output_list = [replace_random_word(get_random_line(lyrics),tweetwords)]
@@ -64,35 +70,38 @@ def index(request):
             TM = TweetMining(method="tf_idf_new")
             word_frequencies, tf = TM.get_topical_words(hashtags)
 
-            ### Load corpus ###
-            if os.path.isfile('dataset.json'):
-                json_data = open('dataset.json').read()
+            if len(word_frequencies) == 0:
+                output_list = ['Not enough tweets are associated with the input hashtag(s). Please try again.']
             else:
-                json_data = open('project_template/dataset.json').read()
-            lyrics = json.loads(json_data)
+                ### Load corpus ###
+                if os.path.isfile('dataset.json'):
+                    json_data = open('dataset.json').read()
+                else:
+                    json_data = open('project_template/dataset.json').read()
+                lyrics = json.loads(json_data)
 
-            ### Generate lyrics
-            output_list = [wordswap(get_random_line(lyrics), word_frequencies)]
-            for i in range(7):
-                line = get_random_line(lyrics, output_list[-1])
-                altered_line = wordswap(line, word_frequencies)
-                output_list.append(altered_line)
-            output_list = format_lines(output_list)
-            
-            ### End of our code ###
-            paginator = Paginator(output_list, 17)
-            page = request.GET.get('page')
-            try:
-                output = paginator.page(page)
-            except PageNotAnInteger:
-                output = paginator.page(1)
-            except EmptyPage:
-                output = paginator.page(paginator.num_pages)
-            return render_to_response('project_template/index.html',
-                          {'output': output,
-                           'magic_url': request.get_full_path(),
-                           'word_cloud_list_1': tf,
-                           })
+                ### Generate lyrics
+                output_list = [wordswap(get_random_line(lyrics), word_frequencies)]
+                for i in range(7):
+                    line = get_random_line(lyrics, output_list[-1])
+                    altered_line = wordswap(line, word_frequencies)
+                    output_list.append(altered_line)
+                output_list = format_lines(output_list)
+                
+                ### End of our code ###
+                paginator = Paginator(output_list, 17)
+                page = request.GET.get('page')
+                try:
+                    output = paginator.page(page)
+                except PageNotAnInteger:
+                    output = paginator.page(1)
+                except EmptyPage:
+                    output = paginator.page(paginator.num_pages)
+                return render_to_response('project_template/index.html',
+                              {'output': output,
+                               'magic_url': request.get_full_path(),
+                               'word_cloud_list_1': tf,
+                               })
 
         ### End of our code ###
         paginator = Paginator(output_list, 17)

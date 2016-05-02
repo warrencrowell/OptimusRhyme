@@ -62,11 +62,11 @@ class TweetMining(object):
     # Returns list of at most num_words topical words for the given hashtag_set
     def get_topical_words(self, hashtag_set, num_words = 30):
         hashtag_set = self.cleanup_tags(hashtag_set)
-        statuses = [t['text'] for t in self.get_tweets(hashtag_set, 200 * len(hashtag_set))]
-        if len(statuses) < MIN_RESULTS:
-            return []
 
         if self.method == 'tf_idf_old':
+            statuses = [t['text'] for t in self.get_tweets(hashtag_set, 100)]
+            if len(statuses) < MIN_RESULTS:
+                return []
             self.process_tweets(statuses)
             vect = TfidfVectorizer(min_df = 2, stop_words = 'english', strip_accents = 'ascii')
             matrix = vect.fit_transform(statuses)
@@ -75,6 +75,10 @@ class TweetMining(object):
             return [features[i] for i in top_indices[:num_words]]
 
         elif self.method == 'tf_idf_new':
+            statuses = [t['text'] for t in self.get_tweets(hashtag_set, 200 * len(hashtag_set))]
+            if len(statuses) < MIN_RESULTS:
+                return [], []
+
             self.process_tweets(statuses, nouns_only = False)
 
             getIDF = lambda word : self.idf[word] if word in self.idf else 0
@@ -85,8 +89,6 @@ class TweetMining(object):
             idf_vals = np.array([np.log(1600000.0 / (1 + getIDF(word))) for word in features])
             tfidf = np.multiply(tf, idf_vals)
 
-            frequencies = [(features[i], tf[0][i]) for i in np.argsort(tf[0])[::-1][:30]]
-
             top_indices = np.argsort(tfidf[0])[::-1]
             max_tfidf = tfidf[0][top_indices[0]]
             frequencies = [(features[i], 80 * (tfidf[0][i] / max_tfidf)) for i in top_indices[:40]]
@@ -94,7 +96,7 @@ class TweetMining(object):
             top_words = [(word, max_tfidf * 1.01) for word in hashtag_set if word.upper() in self.dict and word not in features]
             for i in top_indices:
                 word = features[i]
-                if word not in top_words and word.upper() in self.dict:
+                if not any(word in pair for pair in top_words) and word.upper() in self.dict:
                     top_words.append((word, tfidf[0][i]))
                 if len(top_words) == num_words:
                     break
@@ -110,8 +112,7 @@ class TweetMining(object):
         return [h.strip(',').strip('#').strip() for h in hashtags]
 
     # Helper function for get_topical_words
-    # Returns dict of keys "status_metadata" and "statuses" from Twitter API
-    #   => "statuses" maps to a list of dicts; access "text" key to get status text
+    # Returns list of dicts; access "text" key to get status text
     # hashtag_set is a list of hashtags to search for (don't include #)
     def get_tweets(self, hashtag_set, num_tweets = 500):
         num_queries = num_tweets / 100
@@ -135,6 +136,8 @@ class TweetMining(object):
         query = base_query
         for q in range(num_queries):
             statuses = callAPI(query)['statuses']
+            if statuses == []:
+                return []
             result.extend(statuses)
             minID = min([status['id'] for status in statuses])
             query = base_query + '&max_id=' + str(minID)

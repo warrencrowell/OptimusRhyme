@@ -35,7 +35,7 @@
             <br><br>
 
             <div class="form-group">
-                <input id="input" type="text" name="search" class="form-control" placeholder="Input a hashtag or a list of hashtags separated by spaces">
+                <input id="input" type="text" name="search" class="form-control" placeholder="Input a hashtag or a list of hashtags to generate a relevant rap">
             </div>
             <button type="submit" class="btn btn-info"> Go! </button>
 
@@ -56,37 +56,37 @@
             <div style = "max-width: 950px">
                 <div style = "width: 270px; margin: 10px 20px;">
                     <center>Rhyme Importance</center><br>
-                    <input type="range" name="rhymeInputName" id="rhymeInputId" value="1" min="0" max="1" step="0.01" oninput="rhymeOutputId.value = rhymeInputId.value">
+                    <input type="range" name="rhymeImportance" id="rhymeInputId" value="1" min="0" max="1" step="0.01" oninput="rhymeOutputId.value = rhymeInputId.value">
                     <output name="rhymeOutputName" id="rhymeOutputId">1</output>
                 </div>
 
                 <div style = "width: 270px; margin: 10px 20px;">
                     <center>Part of Speech Importance</center><br>
-                    <input type="range" name="posInputName" id="posInputId" value="1" min="0" max="1" step="0.01" oninput="posOutputId.value = posInputId.value">
+                    <input type="range" name="posImportance" id="posInputId" value="1" min="0" max="1" step="0.01" oninput="posOutputId.value = posInputId.value">
                     <output name="posOutputName" id="posOutputId">1</output>
                 </div>
 
                 <div style = "width: 270px; margin: 10px 20px;">
                     <center>Syllable Count Importance</center><br>
-                    <input type="range" name="syllableInputName" id="syllableInputId" value="1" min="0" max="1" step="0.01" oninput="syllableOutputId.value = syllableInputId.value">
+                    <input type="range" name="syllableCountImportance" id="syllableInputId" value="1" min="0" max="1" step="0.01" oninput="syllableOutputId.value = syllableInputId.value">
                     <output name="syllableOutputName" id="syllableOutputId">1</output>
                 </div>
 
                 <div style = "width: 270px; margin: 10px 20px;">
                     <center>Hashtag Relevance</center><br>
-                    <input type="range" name="hashtagInputName" id="hashtagInputId" value="1" min="0" max="1" step="0.01" oninput="hashtagOutputId.value = hashtagInputId.value">
+                    <input type="range" name="hashtagRelevance" id="hashtagInputId" value="1" min="0" max="1" step="0.01" oninput="hashtagOutputId.value = hashtagInputId.value">
                     <output name="hashtagOutputName" id="hashtagOutputId">1</output>
                 </div>
 
                 <div style = "width: 270px; margin: 10px 20px;">
                     <center>Lyric Relevance</center><br>
-                    <input type="range" name="lyricInputName" id="lyricInputId" value="1" min="0" max="1" step="0.01" oninput="lyricOutputId.value = lyricInputId.value">
+                    <input type="range" name="lyricRelevance" id="lyricInputId" value="1" min="0" max="1" step="0.01" oninput="lyricOutputId.value = lyricInputId.value">
                     <output name="lyricOutputName" id="lyricOutputId">1</output>
                 </div>
 
                 <div style = "width: 270px; margin: 10px 20px;">
                     <center>Semantic Similarity</center><br>
-                    <input type="range" name="wordSubInputName" id="wordSubInputId" value="1" min="0" max="1" step="0.01" oninput="wordSubOutputId.value = wordSubInputId.value">
+                    <input type="range" name="semanticSimilarity" id="wordSubInputId" value="1" min="0" max="1" step="0.01" oninput="wordSubOutputId.value = wordSubInputId.value">
                     <output name="wordSubOutputName" id="wordSubOutputId">1</output>
                 </div>
             </div>
