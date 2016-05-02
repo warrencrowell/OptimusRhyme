@@ -49,7 +49,7 @@ def wordswap(line, tweet_words, weights=[1,1,1,1,1,1]):
                                tweet_words[best_swap[1]][0] +
                                '<span class="hovertext">' + 
                                line[best_swap[0]] +
-                               'text</span></div>')
+                               '</span></div>')
     return new_line
 
 def compare_word_similarities(word1,word2):
@@ -147,7 +147,7 @@ def rhyme_quality(pho_dict, word_a, word_b):
 
     worst_dist = edit_dists[len(phos_a),0] + edit_dists[0,len(phos_b)]
     best_dist = edit_dists[len(phos_a),len(phos_b)]
-    return worst_dist / float(best_dist)
+    return worst_dist / float(best_dist + 1)
 
 def num_syllables(pho_dict, word):
     if not word.upper() in pho_dict:
