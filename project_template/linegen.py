@@ -1,6 +1,15 @@
 import nltk
 import random
 
+EXPLICIT_WORDS = ['shit', 'fuck', 'nigg', 'masturb', 'bitch']
+
+def is_explicit(line):
+    for word in line:
+        for e in EXPLICIT_WORDS:
+            if e in word.lower():
+                return True
+    return False
+
 def get_random_line(corpus, last_line = None):
     while True:
         song = random.choice(corpus)
@@ -14,7 +23,7 @@ def get_random_line(corpus, last_line = None):
         for i in range(len(line)):
             if 'NN' in pos[i][1]:
                 noun_found = True
-        if noun_found and not True in['nigg' in low_word for low_word in [word.lower() for word in line]]:
+        if noun_found and not is_explicit(line): 
             if last_line:
                 if abs(len(last_line) - len(line)) <= 3:
                     break

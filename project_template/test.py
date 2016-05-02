@@ -36,7 +36,7 @@ search = "dessert"
 ### Get tweet words ###
 hashtags = nltk.word_tokenize(search)
 TM = TweetMining(method="tf_idf_new")
-tweetwords = TM.get_topical_words(hashtags)
+tweetwords = TM.get_topical_words(hashtags)[0]
 
 ### Load corpus ###
 if os.path.isfile('dataset.json'):

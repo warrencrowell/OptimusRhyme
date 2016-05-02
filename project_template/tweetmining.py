@@ -21,6 +21,11 @@ class TweetMining(object):
             execfile("config.py", config)
             consumer_key = config["consumer_key"]
             consumer_secret = config["consumer_secret"]
+        elif os.path.isfile("project_template/config.py"):
+            config = {}
+            execfile("project_template/config.py", config)
+            consumer_key = config["consumer_key"]
+            consumer_secret = config["consumer_secret"]
         else:
             consumer_key = os.getenv('CONSUMER_KEY')
             consumer_secret = os.getenv('CONSUMER_SECRET')
@@ -80,8 +85,13 @@ class TweetMining(object):
             idf_vals = np.array([np.log(1600000.0 / (1 + getIDF(word))) for word in features])
             tfidf = np.multiply(tf, idf_vals)
 
+            frequencies = [(features[i], tf[0][i]) for i in np.argsort(tf[0])[::-1][:30]]
+
             top_indices = np.argsort(tfidf[0])[::-1]
-            top_words = [(word, tfidf[0][top_indices[0]] * 1.01) for word in hashtag_set if word.upper() in self.dict and word not in features]
+            max_tfidf = tfidf[0][top_indices[0]]
+            frequencies = [(features[i], 80 * (tfidf[0][i] / max_tfidf)) for i in top_indices[:40]]
+
+            top_words = [(word, max_tfidf * 1.01) for word in hashtag_set if word.upper() in self.dict and word not in features]
             for i in top_indices:
                 word = features[i]
                 if word not in top_words and word.upper() in self.dict:
@@ -89,7 +99,7 @@ class TweetMining(object):
                 if len(top_words) == num_words:
                     break
 
-            return top_words
+            return top_words, frequencies
 
         else:
             raise Exception('Error: Invalid method specified')
