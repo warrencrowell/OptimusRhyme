@@ -26,25 +26,37 @@ else:
     is_vowel = pickle.load(f)
     f.close()
 
-def wordswap(line, tweet_words, weights=[1,1,1,1,1,1]):
+def wordswap(line, tweet_words, weights=[0,1,1,1,1,1]):
     new_line = list(line)
+    line_pos = nltk.pos_tag(line)
+    tweet_pos = nltk.pos_tag([tup[0] for tup in tweet_words])
     swaps = []
     for i in range(len(new_line)):
         if not True in [sym in line[i] for sym in (MERGE_SYMS + REMOVE_SYMS)]:
             for j in range(i+1,len(tweet_words)):
                 swaps.append((i,j))
-    scores = np.zeros((len(swaps),1))
+    scores = np.zeros((len(swaps),6))
 
-    # RHYME SCORES
     for i, swap in enumerate(swaps):
+        # RHYME SCORES
         rhyme_score = rhyme_quality(pho_dict, line[swap[0]], tweet_words[swap[1]][0])
         if rhyme_score:
             scores[i,0] = rhyme_score
         else:
             scores[i,0] = 0
 
+        # SYLLABLE COUNTS
+        if line_pos[swap[0]][1] == tweet_pos[swap[1]][1]:
+            scores[i,1] = 1
+        elif line_pos[swap[0]][1][0:2] == tweet_pos[swap[1]][1][0:2]:
+            scores[i,1] = .5
+        else:
+            scores[i,1] = 0
+
     # MAKE_SWAP
-    best_swap = swaps[np.argmax(scores[:,0])]
+    normed_scores = np.divide(scores, np.sum(scores,0) + .00000001)
+    weighted_scores = np.dot(normed_scores, np.array([weights]).T)
+    best_swap = swaps[np.argmax(weighted_scores[:,0])]
     new_line[best_swap[0]] = ('<div class="substitution">' + 
                                tweet_words[best_swap[1]][0] +
                                '<span class="hovertext">' + 
