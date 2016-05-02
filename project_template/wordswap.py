@@ -62,6 +62,9 @@ def wordswap(line, tweet_words, weights=[0,0,0,1,1,1]):
         # TWEET TFIDF
         scores[i,3] = tweet_words[swap[1]][1]
 
+        # SEMANTIC SIMILARITY
+        # scores[i,5] = compare_word_similarities(line[swap[0]],tweet_words[swap[1]][0])
+
     # MAKE_SWAP
     normed_scores = np.divide(scores, np.sum(scores,0) + .00000001)
     weighted_scores = np.dot(normed_scores, np.array([weights]).T)
