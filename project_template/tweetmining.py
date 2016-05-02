@@ -62,11 +62,11 @@ class TweetMining(object):
     # Returns list of at most num_words topical words for the given hashtag_set
     def get_topical_words(self, hashtag_set, num_words = 30):
         hashtag_set = self.cleanup_tags(hashtag_set)
-        statuses = [t['text'] for t in self.get_tweets(hashtag_set, 200 * len(hashtag_set))]
-        if len(statuses) < MIN_RESULTS:
-            return [], []
 
         if self.method == 'tf_idf_old':
+            statuses = [t['text'] for t in self.get_tweets(hashtag_set, 100)]
+            if len(statuses) < MIN_RESULTS:
+                return []
             self.process_tweets(statuses)
             vect = TfidfVectorizer(min_df = 2, stop_words = 'english', strip_accents = 'ascii')
             matrix = vect.fit_transform(statuses)
@@ -75,6 +75,10 @@ class TweetMining(object):
             return [features[i] for i in top_indices[:num_words]]
 
         elif self.method == 'tf_idf_new':
+            statuses = [t['text'] for t in self.get_tweets(hashtag_set, 200 * len(hashtag_set))]
+            if len(statuses) < MIN_RESULTS:
+                return [], []
+
             self.process_tweets(statuses, nouns_only = False)
 
             getIDF = lambda word : self.idf[word] if word in self.idf else 0
