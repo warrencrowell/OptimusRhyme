@@ -62,7 +62,7 @@ def index(request):
         elif algorithm == 'final':
             ### Get tweet words ###
             TM = TweetMining(method="tf_idf_new")
-            tweetwords = TM.get_topical_words(hashtags)
+            word_frequencies, tf = TM.get_topical_words(hashtags)
 
             ### Load corpus ###
             if os.path.isfile('dataset.json'):
@@ -72,10 +72,10 @@ def index(request):
             lyrics = json.loads(json_data)
 
             ### Generate lyrics
-            output_list = [wordswap(get_random_line(lyrics),tweetwords)]
+            output_list = [wordswap(get_random_line(lyrics), word_frequencies)]
             for i in range(7):
                 line = get_random_line(lyrics, output_list[-1])
-                altered_line = wordswap(line, tweetwords)
+                altered_line = wordswap(line, word_frequencies)
                 output_list.append(altered_line)
             output_list = format_lines(output_list)
             
@@ -91,7 +91,7 @@ def index(request):
             return render_to_response('project_template/index.html',
                           {'output': output,
                            'magic_url': request.get_full_path(),
-                           'word_cloud_list_1': word_frequencies,
+                           'word_cloud_list_1': tf,
                            })
 
         ### End of our code ###

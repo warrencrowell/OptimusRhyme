@@ -6,7 +6,7 @@ import numpy as np
 import os
 
 REMOVE_SYMS = ['[', ']', '(', ')']
-MERGE_SYMS = [',', '\'', '!', '.', '?']
+MERGE_SYMS = [',', '\'', '!', '.', '?', ':']
 
 if os.path.isfile('pho_dict.p'):
     f = open('pho_dict.p', 'rb')
@@ -44,11 +44,25 @@ def wordswap(line, tweet_words, weights=[1,1,1,1,1,1]):
             scores[i,0] = 0
 
     # MAKE_SWAP
-    best_swap = swaps[np.argmax(scores[:,0])]
-    new_line[best_swap[0]] = ('<div class="substitution">' + 
-                               tweet_words[best_swap[1]][0] +
+    top_score_inds = np.argsort(scores[:,0])[::-1]
+    for i in top_score_inds:
+        lyric_ind, tweet_ind = swaps[i]
+        new_word = tweet_words[tweet_ind][0]
+
+        if '\'' in line[lyric_ind] or (lyric_ind < len(line) - 1 and 
+                                        '\'' in line[lyric_ind + 1]):
+            continue
+
+        if new_word != line[lyric_ind]:
+            break
+
+    swap_inds = [i for i in range(len(line)) if line[i] == line[lyric_ind]]
+    for i in swap_inds:
+        to_swap = new_word.capitalize() if i == 0 else new_word
+        new_line[i] = ('<div class="substitution">' + 
+                               to_swap +
                                '<span class="hovertext">' + 
-                               line[best_swap[0]] +
+                               line[i] +
                                '</span></div>')
     return new_line
 

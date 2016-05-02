@@ -50,7 +50,7 @@ a:visited{ color:inherit }
 .substitution {
     position: relative;
     display: inline-block;
-    border-bottom: 3px dotted #EDD76D;
+    border-bottom: 3px solid #EDD76D;
 }
 
 .substitution .hovertext {
@@ -59,8 +59,8 @@ a:visited{ color:inherit }
     bottom: 100%;
     left: 50%; 
     margin-left: -60px;
-    background-color: white;
-    color: black;
+    background-color: #0D7ED5;
+    color: white;
     font-family: "Open Sans", sans-serif;
     text-align: center;
     border-radius: 6px;

@@ -157,10 +157,10 @@
             }
 
             // word_cloud_1
-            d3.layout.cloud().size([600, 600])
+            d3.layout.cloud().size([800, 700])
                     .words(frequency_list_1)
                     .rotate(0)
-                    .fontSize(function(d) { return Math.pow(d.size, 2) / 2500; })
+                    .fontSize(function(d) { return d.size ; })
                     .on("end", draw1)
                     .start();
 
