@@ -64,7 +64,7 @@ class TweetMining(object):
         hashtag_set = self.cleanup_tags(hashtag_set)
         statuses = [t['text'] for t in self.get_tweets(hashtag_set, 200 * len(hashtag_set))]
         if len(statuses) < MIN_RESULTS:
-            return []
+            return [], []
 
         if self.method == 'tf_idf_old':
             self.process_tweets(statuses)
@@ -110,8 +110,7 @@ class TweetMining(object):
         return [h.strip(',').strip('#').strip() for h in hashtags]
 
     # Helper function for get_topical_words
-    # Returns dict of keys "status_metadata" and "statuses" from Twitter API
-    #   => "statuses" maps to a list of dicts; access "text" key to get status text
+    # Returns list of dicts; access "text" key to get status text
     # hashtag_set is a list of hashtags to search for (don't include #)
     def get_tweets(self, hashtag_set, num_tweets = 500):
         num_queries = num_tweets / 100
@@ -135,6 +134,8 @@ class TweetMining(object):
         query = base_query
         for q in range(num_queries):
             statuses = callAPI(query)['statuses']
+            if statuses == []:
+                return []
             result.extend(statuses)
             minID = min([status['id'] for status in statuses])
             query = base_query + '&max_id=' + str(minID)
