@@ -31,7 +31,7 @@ from wordswap import *
 # 	print output
 
 nltk.data.path.append('nltk_data/')
-search = "dessert"
+search = "trump"
 
 ### Get tweet words ###
 hashtags = nltk.word_tokenize(search)

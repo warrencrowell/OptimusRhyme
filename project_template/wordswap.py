@@ -33,7 +33,7 @@ def wordswap(line, tweet_words, weights=[0,0,0,1,1,1]):
     swaps = []
     for i in range(len(new_line)):
         if not True in [sym in line[i] for sym in (MERGE_SYMS + REMOVE_SYMS)]:
-            for j in range(i+1,len(tweet_words)):
+            for j in range(len(tweet_words)):
                 swaps.append((i,j))
     scores = np.zeros((len(swaps),6))
 
@@ -63,7 +63,6 @@ def wordswap(line, tweet_words, weights=[0,0,0,1,1,1]):
         scores[i,3] = tweet_words[swap[1]][1]
 
     # MAKE_SWAP
-
     normed_scores = np.divide(scores, np.sum(scores,0) + .00000001)
     weighted_scores = np.dot(normed_scores, np.array([weights]).T)
     best_swap = swaps[np.argmax(weighted_scores[:,0])]
@@ -71,7 +70,6 @@ def wordswap(line, tweet_words, weights=[0,0,0,1,1,1]):
     for i in top_score_inds:
         lyric_ind, tweet_ind = swaps[i]
         new_word = tweet_words[tweet_ind][0]
-
         if '\'' in line[lyric_ind] or (lyric_ind < len(line) - 1 and 
                                         line[lyric_ind + 1][0] == '\''):
             continue
