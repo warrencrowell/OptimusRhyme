@@ -50,7 +50,7 @@ def wordswap(line, tweet_words, weights=[1,1,1,1,1,1]):
         new_word = tweet_words[tweet_ind][0]
 
         if '\'' in line[lyric_ind] or (lyric_ind < len(line) - 1 and 
-                                        '\'' in line[lyric_ind + 1]):
+                                        line[lyric_ind + 1][0] == '\''):
             continue
 
         if new_word != line[lyric_ind]:

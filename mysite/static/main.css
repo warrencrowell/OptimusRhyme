@@ -50,7 +50,7 @@ a:visited{ color:inherit }
 .substitution {
     position: relative;
     display: inline-block;
-    border-bottom: 3px solid #EDD76D;
+    border-bottom: 2px solid #EDD76D;
 }
 
 .substitution .hovertext {
