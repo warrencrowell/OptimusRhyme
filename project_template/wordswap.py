@@ -1,5 +1,5 @@
 import nltk
-from nltk import wordnet as wn
+from nltk.corpus import wordnet as wn
 import random
 import cPickle as pickle
 import numpy as np
@@ -72,7 +72,7 @@ def wordswap(line, tweet_words, weights=[0,0,0,1,1,1]):
         lyric_ind, tweet_ind = swaps[i]
         new_word = tweet_words[tweet_ind][0]
 
-        if '\'' in line[lyric_ind] or (lyric_ind < len(line) - 1 and 
+        if '\'' in line[lyric_ind] or (lyric_ind < len(line) - 1 and
                                         line[lyric_ind + 1][0] == '\''):
             continue
 
@@ -82,9 +82,9 @@ def wordswap(line, tweet_words, weights=[0,0,0,1,1,1]):
     swap_inds = [i for i in range(len(line)) if line[i] == line[lyric_ind]]
     for i in swap_inds:
         to_swap = new_word.capitalize() if i == 0 else new_word
-        new_line[i] = ('<div class="substitution">' + 
+        new_line[i] = ('<div class="substitution">' +
                                to_swap +
-                               '<span class="hovertext">' + 
+                               '<span class="hovertext">' +
                                line[i] +
                                '</span></div>')
     return new_line
@@ -148,7 +148,7 @@ def format_lines(lines):
         curr_line[0] = curr_line[0][0].upper() + curr_line[0][1:]
         new_lines[i] = " ".join(curr_line)
     return new_lines
-  
+
 def rhyme_quality(pho_dict, word_a, word_b):
     vowel_weight = 3
     if not (word_a.upper() in pho_dict and word_b.upper() in pho_dict):
@@ -168,18 +168,18 @@ def rhyme_quality(pho_dict, word_a, word_b):
             edit_dists[0,j] = edit_dists[0,j-1] + vowel_weight
         else:
             edit_dists[0,j] = edit_dists[0,j-1] + 1
-    
+
     for i in range(1,len(phos_a) + 1):
         for j in range(1,len(phos_b) + 1):
             if phos_a[i-1] == phos_b[j-1]:
                 edit_dists[i,j] = edit_dists[i-1,j-1]
             elif is_vowel[phos_a[i-1]] or is_vowel[phos_b[j-1]]:
-                edit_dists[i,j] = min(vowel_weight + edit_dists[i-1,j], 
-                                      vowel_weight + edit_dists[i,j-1], 
+                edit_dists[i,j] = min(vowel_weight + edit_dists[i-1,j],
+                                      vowel_weight + edit_dists[i,j-1],
                                   2 * vowel_weight + edit_dists[i-1,j-1])
             else:
-                edit_dists[i,j] = min(1 + edit_dists[i-1,j], 
-                                      1 + edit_dists[i,j-1], 
+                edit_dists[i,j] = min(1 + edit_dists[i-1,j],
+                                      1 + edit_dists[i,j-1],
                                       2 + edit_dists[i-1,j-1])
 
     worst_dist = edit_dists[len(phos_a),0] + edit_dists[0,len(phos_b)]
