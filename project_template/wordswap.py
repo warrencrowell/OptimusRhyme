@@ -67,7 +67,7 @@ def wordswap(line, tweet_words, weights=[0,1,1,1,1,1]):
                                         line[lyric_ind + 1][0] == '\''):
             continue
 
-        if new_word != line[lyric_ind]:
+        if new_word.lower() != line[lyric_ind].lower():
             break
 
     swap_inds = [i for i in range(len(line)) if line[i] == line[lyric_ind]]
