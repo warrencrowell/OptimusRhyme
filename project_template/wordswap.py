@@ -26,7 +26,7 @@ else:
     is_vowel = pickle.load(f)
     f.close()
 
-def wordswap(line, tweet_words, weights=[0,0,1,1,1,1]):
+def wordswap(line, tweet_words, weights=[0,0,0,1,1,1]):
     new_line = list(line)
     line_pos = nltk.pos_tag(line)
     tweet_pos = nltk.pos_tag([tup[0] for tup in tweet_words])
@@ -58,6 +58,9 @@ def wordswap(line, tweet_words, weights=[0,0,1,1,1,1]):
         tweet_syls = num_syllables(pho_dict, tweet_words[swap[1]][0])
         if word_syls and tweet_words:
             scores[i,2] = 1/float(abs(word_syls - tweet_syls) + 1)
+
+        # TWEET TFIDF
+        scores[i,3] = tweet_words[swap[1]][1]
 
     # MAKE_SWAP
 
