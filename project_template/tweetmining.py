@@ -89,8 +89,6 @@ class TweetMining(object):
             idf_vals = np.array([np.log(1600000.0 / (1 + getIDF(word))) for word in features])
             tfidf = np.multiply(tf, idf_vals)
 
-            frequencies = [(features[i], tf[0][i]) for i in np.argsort(tf[0])[::-1][:30]]
-
             top_indices = np.argsort(tfidf[0])[::-1]
             max_tfidf = tfidf[0][top_indices[0]]
             frequencies = [(features[i], 80 * (tfidf[0][i] / max_tfidf)) for i in top_indices[:40]]
