@@ -150,7 +150,7 @@
             }
 
             // word_cloud_1
-            d3.layout.cloud().size([800, 600])
+            d3.layout.cloud().size([600, 600])
                     .words(frequency_list_1)
                     .rotate(0)
                     .fontSize(function(d) { return d.size ; })
@@ -160,13 +160,13 @@
             function draw1(words) {
 
                 var svg =  d3.select("#word_cloud_1").append("svg")
-                            .attr("width", 600)
+                            .attr("width", 700)
                             .attr("height", 600)
                             .attr("class", "wordcloud")
                             .append("g")
                             // without the transform, words words would get cutoff to the left and top, they would
                             // appear outside of the SVG area
-                            .attr("transform", "translate(250,300)")
+                            .attr("transform", "translate(260,215)")
                             .selectAll("text")
                             .data(words)
                             .enter().append("text")
@@ -180,7 +180,7 @@
             }
 
             // word_cloud_2
-            d3.layout.cloud().size([800, 600])
+            d3.layout.cloud().size([600, 600])
                     .words(frequency_list_2)
                     .rotate(0)
                     .fontSize(function(d) { return d.size; })
@@ -190,13 +190,13 @@
             function draw2(words) {
 
                 var svg =  d3.select("#word_cloud_2").append("svg")
-                            .attr("width", 600)
+                            .attr("width", 700)
                             .attr("height", 600)
                             .attr("class", "wordcloud")
                             .append("g")
                             // without the transform, words words would get cutoff to the left and top, they would
                             // appear outside of the SVG area
-                            .attr("transform", "translate(250,300)")
+                            .attr("transform", "translate(260,215)")
                             .selectAll("text")
                             .data(words)
                             .enter().append("text")
