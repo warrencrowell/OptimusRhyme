@@ -26,7 +26,7 @@ else:
     is_vowel = pickle.load(f)
     f.close()
 
-def wordswap(line, tweet_words, weights=[0,0,0,1,1,1]):
+def wordswap(line, tweet_words, weights=[0,0,0,0,1,1]):
     new_line = list(line)
     line_pos = nltk.pos_tag(line)
     tweet_pos = nltk.pos_tag([tup[0] for tup in tweet_words])
@@ -63,7 +63,7 @@ def wordswap(line, tweet_words, weights=[0,0,0,1,1,1]):
         scores[i,3] = tweet_words[swap[1]][1]
 
         # SEMANTIC SIMILARITY
-        # scores[i,5] = compare_word_similarities(line[swap[0]],tweet_words[swap[1]][0])
+        scores[i,5] = compare_word_similarities(line[swap[0]],tweet_words[swap[1]][0])
 
     # MAKE_SWAP
     normed_scores = np.divide(scores, np.sum(scores,0) + .00000001)
