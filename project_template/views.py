@@ -24,6 +24,26 @@ else:
     json_data = open('project_template/scores_dataset.json').read()
 song_tfidf = json.loads(json_data)
 
+def consolidate_tfidf(tuple_list):
+    tfidf_dict = {}
+    for word, score in tuple_list:
+        if word in tfidf_dict and tfidf_dict[word] != None:
+            tfidf_dict[word] = tfidf_dict[word].append(score)
+        elif score and score > 0:
+            tfidf_dict[word] = [float(score)]
+
+    result = []
+    for word in tfidf_dict:
+        if tfidf_dict[word] != None:
+            result.append((word, sum(tfidf_dict[word]) / float(len(tfidf_dict[word]))))
+
+    # Adjust tfidf
+    max_tfidf = max(result, key = lambda tup: tup[1])[1]
+    for i in range(len(result)):
+        word, score = result[i]
+        result[i] = (word, 80 * (score / float(max_tfidf)))
+    return result
+
 # Create your views here.
 def index(request):
     output_list = ''
@@ -95,12 +115,16 @@ def index(request):
                 output_list = ['Not enough tweets are associated with the input hashtag(s). Please try again.']
             else:
                 ### Generate lyrics
-                output_list = [wordswap(new_random_line(lyrics,song_tfidf),word_frequencies)]
+                rand_line = new_random_line(lyrics, song_tfidf)
+                lyrics_tfidf = [(rand_line[0][i], rand_line[1][i]) for i in range(len(rand_line[0]))]
+                output_list = [wordswap(rand_line, word_frequencies)]
                 for i in range(7):
                     line = new_random_line(lyrics,song_tfidf,output_list[-1])
+                    lyrics_tfidf.extend([(line[0][i], line[1][i]) for i in range(len(line[0]))])
                     altered_line = wordswap(line, word_frequencies)
                     output_list.append(altered_line)
                 output_list = format_lines(output_list)
+                lyrics_tfidf = consolidate_tfidf(lyrics_tfidf)
 
                 ### End of our code ###
                 paginator = Paginator(output_list, 17)
@@ -115,6 +139,7 @@ def index(request):
                               {'output': output,
                                'magic_url': request.get_full_path(),
                                'word_cloud_list_1': tf,
+                               'word_cloud_list_2': lyrics_tfidf,
                                'search': search,
                                'algorithm': algorithm,
                                'rhymeImportance':rhymeImportance,
