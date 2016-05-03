@@ -30,10 +30,22 @@ def index(request):
     output=''
     search=''
     algorithm=''
+    rhymeImportance=1
+    syllableCountImportance=1
+    posImportance=1
+    hashtagRelevance=1
+    lyricRelevance=1
+    semanticSimilarity=1
     if request.GET.get('search'):
         nltk.data.path.append('nltk_data/')
         search = request.GET.get('search')
         algorithm = request.GET.get('algorithm') # Either 'prototype' or 'final'
+        rhymeImportance = request.GET.get('rhymeImportance')
+        syllableCountImportance = request.GET.get('syllableCountImportance')
+        posImportance = request.GET.get('posImportance')
+        hashtagRelevance = request.GET.get('hashtagRelevance')
+        lyricRelevance = request.GET.get('lyricRelevance')
+        semanticSimilarity = request.GET.get('semanticSimilarity')
 
         ### Get tweet words ###
         hashtags = search.split()
@@ -66,6 +78,12 @@ def index(request):
                             'magic_url': request.get_full_path(),
                             'search': search,
                             'algorithm': algorithm,
+                            'rhymeImportance':rhymeImportance,
+                            'syllableCountImportance':syllableCountImportance,
+                            'posImportance':posImportance,
+                            'hashtagRelevance':hashtagRelevance,
+                            'lyricRelevance':lyricRelevance,
+                            'semanticSimilarity':semanticSimilarity,
                             })
 
         elif algorithm == 'final':
@@ -97,8 +115,14 @@ def index(request):
                               {'output': output,
                                'magic_url': request.get_full_path(),
                                'word_cloud_list_1': tf,
-                                'search': search,
-                                'algorithm': algorithm,
+                               'search': search,
+                               'algorithm': algorithm,
+                               'rhymeImportance':rhymeImportance,
+                               'syllableCountImportance':syllableCountImportance,
+                               'posImportance':posImportance,
+                               'hashtagRelevance':hashtagRelevance,
+                               'lyricRelevance':lyricRelevance,
+                               'semanticSimilarity':semanticSimilarity,
                                })
 
         ### End of our code ###
@@ -113,6 +137,12 @@ def index(request):
     return render_to_response('project_template/index.html',
                           {'output': output,
                            'magic_url': request.get_full_path(),
-                            'search': search,
-                            'algorithm': algorithm,
+                           'search': search,
+                           'algorithm': algorithm,
+                           'rhymeImportance':rhymeImportance,
+                           'syllableCountImportance':syllableCountImportance,
+                           'posImportance':posImportance,
+                           'hashtagRelevance':hashtagRelevance,
+                           'lyricRelevance':lyricRelevance,
+                           'semanticSimilarity':semanticSimilarity,
                            })
