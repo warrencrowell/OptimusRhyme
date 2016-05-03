@@ -41,7 +41,7 @@ def consolidate_tfidf(tuple_list):
     max_tfidf = max(result, key = lambda tup: tup[1])[1]
     for i in range(len(result)):
         word, score = result[i]
-        result[i] = (word, 80 * (score / float(max_tfidf)))
+        result[i] = (word, max(20, 80 * (score / float(max_tfidf))))
     return result
 
 # Create your views here.
