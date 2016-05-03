@@ -23,6 +23,7 @@ def index(request):
     output_list = ''
     output=''
     search=''
+    algorithm=''
     if request.GET.get('search'):
         nltk.data.path.append('nltk_data/')
         search = request.GET.get('search')
@@ -65,6 +66,7 @@ def index(request):
                             {'output': output,
                             'magic_url': request.get_full_path(),
                             'search': search,
+                            'algorithm': algorithm,
                             })
 
         elif algorithm == 'final':
@@ -104,6 +106,7 @@ def index(request):
                                'magic_url': request.get_full_path(),
                                'word_cloud_list_1': tf,
                                 'search': search,
+                                'algorithm': algorithm,
                                })
 
         ### End of our code ###
@@ -119,4 +122,5 @@ def index(request):
                           {'output': output,
                            'magic_url': request.get_full_path(),
                             'search': search,
+                            'algorithm': algorithm,
                            })
