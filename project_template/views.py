@@ -78,17 +78,23 @@ def index(request):
                 output_list = ['Not enough tweets are associated with the input hashtag(s). Please try again.']
             else:
                 ### Load corpus ###
-                if os.path.isfile('dataset.json'):
-                    json_data = open('dataset.json').read()
+                if os.path.isfile('lyrics_dataset.json'):
+                    json_data = open('lyrics_dataset.json').read()
                 else:
-                    json_data = open('project_template/dataset.json').read()
+                    json_data = open('project_template/lyrics_dataset.json').read()
                 lyrics = json.loads(json_data)
 
+                if os.path.isfile('scores_dataset.json'):
+                    json_data = open('scores_dataset.json').read()
+                else:
+                    json_data = open('project_template/scores_dataset.json').read()
+                song_tfidf = json.loads(json_data)
+
                 ### Generate lyrics
-                output_list = [wordswap(get_random_line(lyrics), word_frequencies)]
+                output_list = [wordswap(new_random_line(lyrics,song_tfidf),tweetwords)]
                 for i in range(7):
-                    line = get_random_line(lyrics, output_list[-1])
-                    altered_line = wordswap(line, word_frequencies)
+                    line = new_random_line(lyrics,song_tfidf,output_list[-1])
+                    altered_line = wordswap(line, tweetwords)
                     output_list.append(altered_line)
                 output_list = format_lines(output_list)
 
