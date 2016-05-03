@@ -63,7 +63,11 @@ def wordswap(line, tweet_words, weights=[0,0,0,0,1,1]):
         scores[i,3] = tweet_words[swap[1]][1]
 
         # SEMANTIC SIMILARITY
-        scores[i,5] = compare_word_similarities(line[swap[0]],tweet_words[swap[1]][0])
+        wordnet_sym = compare_word_similarities(line[swap[0]],tweet_words[swap[1]][0])
+        if wordnet_sym:
+            scores[i,5] = wordnet_sym
+        else:
+            scores[i,5] = 0.0
 
     # MAKE_SWAP
     normed_scores = np.divide(scores, np.sum(scores,0) + .00000001)
