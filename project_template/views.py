@@ -54,8 +54,8 @@ def index(request):
     word_cloud_list_1=''
     word_cloud_list_2=''
     rhymeImportance=default_weights[0]
-    syllableCountImportance=default_weights[1]
-    posImportance=default_weights[2]
+    posImportance=default_weights[1]
+    syllableCountImportance=default_weights[2]
     hashtagRelevance=default_weights[3]
     lyrics_tfidf=''
     lyricRelevance=default_weights[4]
@@ -69,10 +69,10 @@ def index(request):
             rhymeImportance = default_weights[0]
         syllableCountImportance = request.GET.get('syllableCountImportance')
         if not syllableCountImportance:
-            syllableCountImportance = default_weights[1]
+            syllableCountImportance = default_weights[2]
         posImportance = request.GET.get('posImportance')
         if not posImportance:
-            posImportance = default_weights[2]
+            posImportance = default_weights[1]
         hashtagRelevance = request.GET.get('hashtagRelevance')
         if not hashtagRelevance:
             hashtagRelevance = default_weights[3]
@@ -83,7 +83,12 @@ def index(request):
         if not semanticSimilarity:
             semanticSimilarity = default_weights[5]
 
-        weights = [rhymeImportance,syllableCountImportance,posImportance,hashtagRelevance,lyricRelevance,semanticSimilarity]
+        weights = [float(rhymeImportance),
+                   float(posImportance),
+                   float(syllableCountImportance),
+                   float(hashtagRelevance),
+                   float(lyricRelevance),
+                   float(semanticSimilarity)]
 
         ### Get tweet words ###
         hashtags = search.split()
