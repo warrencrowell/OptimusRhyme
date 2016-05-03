@@ -46,41 +46,44 @@ def consolidate_tfidf(tuple_list):
 
 # Create your views here.
 def index(request):
+    default_weights = [1,1,.5,.25,.25,.25]
     output_list = ''
     output=''
     search=''
     algorithm=''
     word_cloud_list_1=''
     word_cloud_list_2=''
-    rhymeImportance=1
-    syllableCountImportance=1
-    posImportance=1
-    hashtagRelevance=1
+    rhymeImportance=default_weights[0]
+    syllableCountImportance=default_weights[1]
+    posImportance=default_weights[2]
+    hashtagRelevance=default_weights[3]
     lyrics_tfidf=''
-    lyricRelevance=1
-    semanticSimilarity=1
+    lyricRelevance=default_weights[4]
+    semanticSimilarity=default_weights[5]
     if request.GET.get('search'):
         nltk.data.path.append('nltk_data/')
         search = request.GET.get('search')
         algorithm = request.GET.get('algorithm') # Either 'prototype' or 'final'
         rhymeImportance = request.GET.get('rhymeImportance')
         if not rhymeImportance:
-            rhymeImportance = 1
+            rhymeImportance = default_weights[0]
         syllableCountImportance = request.GET.get('syllableCountImportance')
         if not syllableCountImportance:
-            syllableCountImportance = 1
+            syllableCountImportance = default_weights[1]
         posImportance = request.GET.get('posImportance')
         if not posImportance:
-            posImportance = 1
+            posImportance = default_weights[2]
         hashtagRelevance = request.GET.get('hashtagRelevance')
         if not hashtagRelevance:
-            hashtagRelevance = 1
+            hashtagRelevance = default_weights[3]
         lyricRelevance = request.GET.get('lyricRelevance')
         if not lyricRelevance:
-            lyricRelevance = 1
+            lyricRelevance = default_weights[4]
         semanticSimilarity = request.GET.get('semanticSimilarity')
         if not semanticSimilarity:
-            semanticSimilarity = 1
+            semanticSimilarity = default_weights[5]
+
+        weights = [rhymeImportance,syllableCountImportance,posImportance,hashtagRelevance,lyricRelevance,semanticSimilarity]
 
         ### Get tweet words ###
         hashtags = search.split()
@@ -134,11 +137,11 @@ def index(request):
                 ### Generate lyrics
                 rand_line = new_random_line(lyrics, song_tfidf)
                 lyrics_tfidf = [(rand_line[0][i], rand_line[1][i]) for i in range(len(rand_line[0]))]
-                output_list = [wordswap(rand_line, word_frequencies)]
+                output_list = [wordswap(rand_line, word_frequencies,weights)]
                 for i in range(7):
                     line = new_random_line(lyrics,song_tfidf,output_list[-1])
                     lyrics_tfidf.extend([(line[0][i], line[1][i]) for i in range(len(line[0]))])
-                    altered_line = wordswap(line, word_frequencies)
+                    altered_line = wordswap(line, word_frequencies,weights)
                     output_list.append(altered_line)
                 output_list = format_lines(output_list)
                 lyrics_tfidf = consolidate_tfidf(lyrics_tfidf)

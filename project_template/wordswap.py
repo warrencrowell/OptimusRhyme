@@ -26,7 +26,7 @@ else:
     is_vowel = pickle.load(f)
     f.close()
 
-def wordswap(line_tup, tweet_words, weights=[0,0,0,0,1,0]):
+def wordswap(line_tup, tweet_words, weights=[1,1,.5,.25,.25,.25]):
     line = line_tup[0]
     new_line = list(line)
     line_pos = nltk.pos_tag(line)
