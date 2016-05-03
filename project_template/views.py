@@ -77,10 +77,10 @@ def index(request):
                 output_list = ['Not enough tweets are associated with the input hashtag(s). Please try again.']
             else:
                 ### Generate lyrics
-                output_list = [wordswap(new_random_line(lyrics,song_tfidf),tweetwords)]
+                output_list = [wordswap(new_random_line(lyrics,song_tfidf),word_frequencies)]
                 for i in range(7):
                     line = new_random_line(lyrics,song_tfidf,output_list[-1])
-                    altered_line = wordswap(line, tweetwords)
+                    altered_line = wordswap(line, word_frequencies)
                     output_list.append(altered_line)
                 output_list = format_lines(output_list)
 
