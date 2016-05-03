@@ -18,6 +18,7 @@
         <script type="text/javascript">
             window.onload = function() {
                 slidersHide();
+                document.getElementById('help-txt').style.display = 'none';
             }
             function slidersHide() {
                 if (document.getElementById('pbutton').checked) {
@@ -29,11 +30,25 @@
                     document.getElementById('word_cloud_div').style.display = 'max-width: 950px';
             }
             }
+            function helpToggle() {
+                document.getElementById('help-txt').style.display = 'block';
+            }
+
         </script>
     </head>
 
     <body>
         <!-- TODO: Please change lines 10 and 11 according to your actual project name and student names-->
+        <div class='topleft'>
+            <p id="help-msg" onclick="javascript:helpToggle();"><b>help</b></p>
+        <div id="help-txt" style='none' hidden>
+            <p>Input a hashtag/topic into the search bar.</p>
+            <p>Adjust sliders to fine-tune what you desire in your lyrics.</p>
+            <p>After submitting your query, the rap lyrics will be shown below.</p>
+            <p>Below that are word clouds to help visualize the data from both Twitter and our song database.</p>
+        </div>
+        </div>
+
         <div class="topcorner">
             <p><b>Tweet Beat</b></p>
             <p>Ryan Vogan (rcv39)</p>
