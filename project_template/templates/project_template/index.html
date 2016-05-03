@@ -62,38 +62,38 @@
             <div style = "max-width: 950px">
                 <div style = "width: 270px; margin: 10px 20px;">
                     <center>Rhyme Importance</center><br>
-                    <input type="range" name="rhymeImportance" id="rhymeInputId" value="1" min="0" max="1" step="0.01" oninput="rhymeOutputId.value = rhymeInputId.value">
-                    <output name="rhymeOutputName" id="rhymeOutputId">1</output>
+                    <input type="range" name="rhymeImportance" id="rhymeInputId" value="{{ rhymeImportance }}" min="0" max="1" step="0.01" oninput="rhymeOutputId.value = rhymeInputId.value">
+                    <output name="rhymeOutputName" id="rhymeOutputId">{{ rhymeImportance }}</output>
                 </div>
 
                 <div style = "width: 270px; margin: 10px 20px;">
                     <center>Part of Speech Importance</center><br>
-                    <input type="range" name="posImportance" id="posInputId" value="1" min="0" max="1" step="0.01" oninput="posOutputId.value = posInputId.value">
-                    <output name="posOutputName" id="posOutputId">1</output>
+                    <input type="range" name="posImportance" id="posInputId" value="{{ posImportance }}" min="0" max="1" step="0.01" oninput="posOutputId.value = posInputId.value">
+                    <output name="posOutputName" id="posOutputId">{{ posImportance }}</output>
                 </div>
 
                 <div style = "width: 270px; margin: 10px 20px;">
                     <center>Syllable Count Importance</center><br>
-                    <input type="range" name="syllableCountImportance" id="syllableInputId" value="1" min="0" max="1" step="0.01" oninput="syllableOutputId.value = syllableInputId.value">
-                    <output name="syllableOutputName" id="syllableOutputId">1</output>
+                    <input type="range" name="syllableCountImportance" id="syllableInputId" value="{{ syllableCountImportance }}" min="0" max="1" step="0.01" oninput="syllableOutputId.value = syllableInputId.value">
+                    <output name="syllableOutputName" id="syllableOutputId">{{ syllableCountImportance }}</output>
                 </div>
 
                 <div style = "width: 270px; margin: 10px 20px;">
                     <center>Hashtag Relevance</center><br>
-                    <input type="range" name="hashtagRelevance" id="hashtagInputId" value="1" min="0" max="1" step="0.01" oninput="hashtagOutputId.value = hashtagInputId.value">
-                    <output name="hashtagOutputName" id="hashtagOutputId">1</output>
+                    <input type="range" name="hashtagRelevance" id="hashtagInputId" value="{{ hashtagRelevance }}" min="0" max="1" step="0.01" oninput="hashtagOutputId.value = hashtagInputId.value">
+                    <output name="hashtagOutputName" id="hashtagOutputId">{{ hashtagRelevance }}</output>
                 </div>
 
                 <div style = "width: 270px; margin: 10px 20px;">
                     <center>Lyric Relevance</center><br>
-                    <input type="range" name="lyricRelevance" id="lyricInputId" value="1" min="0" max="1" step="0.01" oninput="lyricOutputId.value = lyricInputId.value">
-                    <output name="lyricOutputName" id="lyricOutputId">1</output>
+                    <input type="range" name="lyricRelevance" id="lyricInputId" value="{{ lyricRelevance }}" min="0" max="1" step="0.01" oninput="lyricOutputId.value = lyricInputId.value">
+                    <output name="lyricOutputName" id="lyricOutputId">{{ lyricRelevance }}</output>
                 </div>
 
                 <div style = "width: 270px; margin: 10px 20px;">
                     <center>Semantic Similarity</center><br>
-                    <input type="range" name="semanticSimilarity" id="wordSubInputId" value="1" min="0" max="1" step="0.01" oninput="wordSubOutputId.value = wordSubInputId.value">
-                    <output name="wordSubOutputName" id="wordSubOutputId">1</output>
+                    <input type="range" name="semanticSimilarity" id="wordSubInputId" value="{{ semanticSimilarity }}" min="0" max="1" step="0.01" oninput="wordSubOutputId.value = wordSubInputId.value">
+                    <output name="wordSubOutputName" id="wordSubOutputId">{{ semanticSimilarity }}</output>
                 </div>
             </div>
 
