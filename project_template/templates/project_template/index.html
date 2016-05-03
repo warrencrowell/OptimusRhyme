@@ -22,11 +22,11 @@
             function slidersHide() {
                 if (document.getElementById('pbutton').checked) {
                     document.getElementById('sliders').style.display = 'none';
-                    document.getElementById('word_cloud_1').style.display = 'none';
+                    document.getElementById('word_cloud_div').style.display = 'none';
                 }
                 else if(document.getElementById('fbutton').checked) {
                     document.getElementById('sliders').style.display = 'block';
-                    document.getElementById('word_cloud_1').style.display = 'max-width: 950px';
+                    document.getElementById('word_cloud_div').style.display = 'max-width: 950px';
             }
             }
         </script>
@@ -121,39 +121,21 @@
                 {% autoescape off %}{{line}}{% endautoescape %}<br>
             {% endfor %}
 
-            <!-- <div class="pagination">
-                <span class="step-links">
-                    {% if output.has_previous %}
-                    <a href= "{{magic_url}}&page={{ output.previous_page_number }}">previous</a>
-                    {% endif %}
-
-                    <span class="current">
-                    Page _{{ output.number }}_ of _{{ output.paginator.num_pages }}_
-                    </span>
-
-                    {% if output.has_next %}
-                    <a href= "{{magic_url}}&page={{ output.next_page_number }}">next</a>
-                    {% endif %}
-                </span>
-            </div> -->
-        </div>
         {% if word_cloud_list_1 != '' %}
 
         <div id="word_cloud_div">
-            <h4 align="center"></h4>
-           <!--
-            <table>
-            <tr>
-                <th>{{song_list.0.0}}</th>
-                <th>{{song_list.1.0}}</th>
-                <th>{{song_list.2.0}}</th>
-            </tr>
-            </table>
-            -->
-            <div id="word_cloud_1" align="center" class="float-center"></div>
-            <!--<div id="word_cloud_2" align="center" class="float-left"></div>
-            <div id="word_cloud_3" align="center" class="float-left"></div>-->
+            <br></br>
+            {% if output  %}
+            <div><b>Hashtag Word Cloud</b><br>
+            <div id="word_cloud_1" class="float-center"></div>
+            </div>
+
+            <div><b>Rap Lyric Word Cloud</b><br>
+            <div id="word_cloud_2" class="float-center"/></div>
+            </div>
+            {% endif %}
         </div>
+    </div>
 
         {% load static from staticfiles %}
         <script src="http://d3js.org/d3.v3.min.js"></script>
@@ -164,11 +146,17 @@
         <script src="{{cloudjs}}"></script>
 
         <script>
-
-            // frequency_lists for top 3 movies
             var frequency_list_1 = [];
             {% for word_weight in word_cloud_list_1 %}
             frequency_list_1.push({
+                "text": "{{word_weight.0}}",
+                "size": {{word_weight.1}}
+            });
+            {% endfor %}
+
+            var frequency_list_2 = [];
+            {% for word_weight in word_cloud_list_2 %}
+            frequency_list_2.push({
                 "text": "{{word_weight.0}}",
                 "size": {{word_weight.1}}
             });
@@ -181,7 +169,7 @@
             }
 
             // word_cloud_1
-            d3.layout.cloud().size([800, 700])
+            d3.layout.cloud().size([800, 600])
                     .words(frequency_list_1)
                     .rotate(0)
                     .fontSize(function(d) { return d.size ; })
@@ -191,6 +179,36 @@
             function draw1(words) {
 
                 var svg =  d3.select("#word_cloud_1").append("svg")
+                            .attr("width", 600)
+                            .attr("height", 600)
+                            .attr("class", "wordcloud")
+                            .append("g")
+                            // without the transform, words words would get cutoff to the left and top, they would
+                            // appear outside of the SVG area
+                            .attr("transform", "translate(250,300)")
+                            .selectAll("text")
+                            .data(words)
+                            .enter().append("text")
+                            .style("font-size", function(d) { return d.size + "px"; })
+                            .style("font-family", "Amaranth")
+                            .style("fill", function(d) { return rand_color(colors); })
+                            .attr("transform", function(d) {
+                                return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+                            })
+                            .text(function(d) { return d.text; });
+            }
+
+            // word_cloud_2
+            d3.layout.cloud().size([800, 600])
+                    .words(frequency_list_2)
+                    .rotate(0)
+                    .fontSize(function(d) { return d.size; })
+                    .on("end", draw2)
+                    .start();
+
+            function draw2(words) {
+
+                var svg =  d3.select("#word_cloud_2").append("svg")
                             .attr("width", 600)
                             .attr("height", 600)
                             .attr("class", "wordcloud")
