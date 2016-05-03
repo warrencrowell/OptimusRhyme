@@ -26,7 +26,7 @@ else:
     is_vowel = pickle.load(f)
     f.close()
 
-def wordswap(line_tup, tweet_words, weights=[1,1,.5,.25,.25,.25]):
+def wordswap(line_tup, tweet_words, weights=[1,1,.5,.25,.25,.25], num_swaps=2):
     line = line_tup[0]
     new_line = list(line)
     line_pos = nltk.pos_tag(line)
@@ -78,6 +78,8 @@ def wordswap(line_tup, tweet_words, weights=[1,1,.5,.25,.25,.25]):
     weighted_scores = np.dot(normed_scores, np.array([weights]).T)
     best_swap = swaps[np.argmax(weighted_scores[:,0])]
     top_score_inds = np.argsort(weighted_scores[:,0])[::-1]
+
+    swaps_made = 0
     for i in top_score_inds:
         lyric_ind, tweet_ind = swaps[i]
         new_word = tweet_words[tweet_ind][0]
@@ -85,16 +87,18 @@ def wordswap(line_tup, tweet_words, weights=[1,1,.5,.25,.25,.25]):
             continue
 
         if new_word.lower() != line[lyric_ind].lower():
+            swap_inds = [i for i in range(len(line)) if line[i] == line[lyric_ind]]
+            for i in swap_inds:
+                swaps_made += 1
+                to_swap = new_word.capitalize() if i == 0 else new_word
+                new_line[i] = ('<div class="substitution">' +
+                                       to_swap +
+                                       '<span class="hovertext">' +
+                                       line[i] +
+                                       '</span></div>')
+        if swaps_made >= num_swaps:
             break
 
-    swap_inds = [i for i in range(len(line)) if line[i] == line[lyric_ind]]
-    for i in swap_inds:
-        to_swap = new_word.capitalize() if i == 0 else new_word
-        new_line[i] = ('<div class="substitution">' +
-                               to_swap +
-                               '<span class="hovertext">' +
-                               line[i] +
-                               '</span></div>')
     return new_line
 
 def compare_word_similarities(word1,word2):

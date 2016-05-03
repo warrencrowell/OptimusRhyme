@@ -47,6 +47,7 @@ def consolidate_tfidf(tuple_list):
 # Create your views here.
 def index(request):
     default_weights = [1,1,.5,.25,.25,.25]
+    default_swaps = 1
     output_list = ''
     output=''
     search=''
@@ -60,6 +61,7 @@ def index(request):
     lyrics_tfidf=''
     lyricRelevance=default_weights[4]
     semanticSimilarity=default_weights[5]
+    swapsPerLine = default_swaps
     if request.GET.get('search'):
         nltk.data.path.append('nltk_data/')
         search = request.GET.get('search')
@@ -82,6 +84,9 @@ def index(request):
         semanticSimilarity = request.GET.get('semanticSimilarity')
         if not semanticSimilarity:
             semanticSimilarity = default_weights[5]
+        swapsPerLine = request.GET.get('swapsPerLine')
+        if not swapsPerLine:
+            swapsPerLine = default_swaps
 
         weights = [float(rhymeImportance),
                    float(posImportance),
@@ -89,6 +94,7 @@ def index(request):
                    float(hashtagRelevance),
                    float(lyricRelevance),
                    float(semanticSimilarity)]
+        swaps = int(swapsPerLine)
 
         ### Get tweet words ###
         hashtags = search.split()
@@ -129,6 +135,7 @@ def index(request):
                             'hashtagRelevance':hashtagRelevance,
                             'lyricRelevance':lyricRelevance,
                             'semanticSimilarity':semanticSimilarity,
+                            'swapsPerLine': swapsPerLine
                             })
 
         elif algorithm == 'final':
@@ -142,11 +149,11 @@ def index(request):
                 ### Generate lyrics
                 rand_line = new_random_line(lyrics, song_tfidf)
                 lyrics_tfidf = [(rand_line[0][i], rand_line[1][i]) for i in range(len(rand_line[0]))]
-                output_list = [wordswap(rand_line, word_frequencies,weights)]
+                output_list = [wordswap(rand_line, word_frequencies,weights, num_swaps=swaps)]
                 for i in range(7):
                     line = new_random_line(lyrics,song_tfidf,output_list[-1])
                     lyrics_tfidf.extend([(line[0][i], line[1][i]) for i in range(len(line[0]))])
-                    altered_line = wordswap(line, word_frequencies,weights)
+                    altered_line = wordswap(line, word_frequencies,weights, num_swaps=swaps)
                     output_list.append(altered_line)
                 output_list = format_lines(output_list)
                 lyrics_tfidf = consolidate_tfidf(lyrics_tfidf)
@@ -173,6 +180,7 @@ def index(request):
                                'hashtagRelevance':hashtagRelevance,
                                'lyricRelevance':lyricRelevance,
                                'semanticSimilarity':semanticSimilarity,
+                               'swapsPerLine': swapsPerLine
                                })
 
         ### End of our code ###
@@ -197,4 +205,5 @@ def index(request):
                            'hashtagRelevance':hashtagRelevance,
                            'lyricRelevance':lyricRelevance,
                            'semanticSimilarity':semanticSimilarity,
+                           'swapsPerLine': swapsPerLine
                            })
