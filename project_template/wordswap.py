@@ -78,8 +78,7 @@ def wordswap(line_tup, tweet_words, weights=[0,0,0,0,1,1]):
     for i in top_score_inds:
         lyric_ind, tweet_ind = swaps[i]
         new_word = tweet_words[tweet_ind][0]
-        if '\'' in line[lyric_ind] or (lyric_ind < len(line) - 1 and
-                                        line[lyric_ind + 1][0] == '\''):
+        if '\'' in line[lyric_ind] or (lyric_ind < len(line) - 1 and '\'' in line[lyric_ind + 1]):
             continue
 
         if new_word.lower() != line[lyric_ind].lower():

@@ -35,7 +35,13 @@
             <br><br>
 
             <div class="form-group">
+
+                {% if search == '' %}
                 <input id="input" type="text" name="search" class="form-control" placeholder="Input a hashtag or a list of hashtags to generate a relevant rap">
+                <!--<input id="input" type="text" name="search" class="form-control" placeholder="Your Input">-->
+                {% else %}
+                <input id="input" type="text" name="search" class="form-control" placeholder="{{ search }}" value="{{ search }}">
+                {% endif %}
             </div>
             <button type="submit" class="btn btn-info"> Go! </button>
 
