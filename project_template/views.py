@@ -22,6 +22,7 @@ lyrics = json.loads(json_data)
 def index(request):
     output_list = ''
     output=''
+    search=''
     if request.GET.get('search'):
         nltk.data.path.append('nltk_data/')
         search = request.GET.get('search')
@@ -63,6 +64,7 @@ def index(request):
             return render_to_response('project_template/index.html',
                             {'output': output,
                             'magic_url': request.get_full_path(),
+                            'search': search,
                             })
 
         elif algorithm == 'final':
@@ -87,7 +89,7 @@ def index(request):
                     altered_line = wordswap(line, word_frequencies)
                     output_list.append(altered_line)
                 output_list = format_lines(output_list)
-                
+
                 ### End of our code ###
                 paginator = Paginator(output_list, 17)
                 page = request.GET.get('page')
@@ -101,6 +103,7 @@ def index(request):
                               {'output': output,
                                'magic_url': request.get_full_path(),
                                'word_cloud_list_1': tf,
+                                'search': search,
                                })
 
         ### End of our code ###
@@ -115,4 +118,5 @@ def index(request):
     return render_to_response('project_template/index.html',
                           {'output': output,
                            'magic_url': request.get_full_path(),
+                            'search': search,
                            })
