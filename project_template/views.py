@@ -24,6 +24,12 @@ else:
     json_data = open('project_template/scores_dataset.json').read()
 song_tfidf = json.loads(json_data)
 
+if os.path.isfile('topics.json'):
+    json_data = open('topics.json').read()
+else:
+    json_data = open('project_template/topics.json').read()
+topics = json.loads(json_data)
+
 def consolidate_tfidf(tuple_list):
     tfidf_dict = {}
     for word, score in tuple_list:
@@ -147,13 +153,21 @@ def index(request):
                 output_list = ['Not enough tweets are associated with the input hashtag(s). Please try again.']
             else:
                 ### Generate lyrics
-                rand_line = new_random_line(lyrics, song_tfidf)
-                lyrics_tfidf = [(rand_line[0][i], rand_line[1][i]) for i in range(len(rand_line[0]))]
-                output_list = [wordswap(rand_line, word_frequencies,weights, num_swaps=swaps)]
-                for i in range(7):
-                    line = new_random_line(lyrics,song_tfidf,output_list[-1])
-                    lyrics_tfidf.extend([(line[0][i], line[1][i]) for i in range(len(line[0]))])
-                    altered_line = wordswap(line, word_frequencies,weights, num_swaps=swaps)
+                # rand_line = new_random_line(lyrics, song_tfidf)
+                # lyrics_tfidf = [(rand_line[0][i], rand_line[1][i]) for i in range(len(rand_line[0]))]
+                # output_list = [wordswap(rand_line, word_frequencies,weights, num_swaps=swaps)]
+                # for i in range(7):
+                while True:
+                    best_song_idx = pick_song_idx(topics, word_frequencies)
+                    if len(lyrics[best_song_idx]) > 7:
+                        break
+                best_song = lyrics[best_song_idx]
+                output_list = []
+                lyrics_tfidf = []
+                for i,line in enumerate(best_song):
+                    # line = new_random_line(lyrics,song_tfidf,output_list[-1])
+                    lyrics_tfidf.extend([(line[j], song_tfidf[best_song_idx][i][j]) for j in range(len(line))])
+                    altered_line = wordswap((line,song_tfidf[best_song_idx][i]), word_frequencies,weights, num_swaps=swaps)
                     output_list.append(altered_line)
                 output_list = format_lines(output_list)
                 lyrics_tfidf = consolidate_tfidf(lyrics_tfidf)

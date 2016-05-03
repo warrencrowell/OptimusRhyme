@@ -102,15 +102,18 @@ def wordswap(line_tup, tweet_words, weights=[1,1,.5,.25,.25,.25], num_swaps=2):
     return new_line
 
 def compare_word_similarities(word1,word2):
-    syns1 = wn.synsets(word1)
-    if(len(syns1)<1):
-        return 0.0
-    syns2 = wn.synsets(word2)
-    if(len(syns2)<1):
-        return 0.0
     try:
-        sym = wn.wup_similarity(syns1[0],syns2[0])
-        return sym
+        syns1 = wn.synsets(word1)
+        if(len(syns1)<1):
+            return 0.0
+        syns2 = wn.synsets(word2)
+        if(len(syns2)<1):
+            return 0.0
+        try:
+            sym = wn.wup_similarity(syns1[0],syns2[0])
+            return sym
+        except:
+            return 0.0
     except:
         return 0.0
 
@@ -207,3 +210,18 @@ def num_syllables(pho_dict, word):
             if is_vowel[pho]:
                 num_syl += 1
         return num_syl
+
+def pick_song_idx(topics, tweetwords):
+    best_score = 0
+    best_song = 0
+    rand_idxs = set()
+    while(len(rand_idxs)<50):
+        rand_idxs.add(random.randint(0,len(topics)-1))
+    rand_idxs = list(rand_idxs)
+    for i in rand_idxs:
+        for j in range(len(tweetwords)):
+            score = compare_word_similarities(topics[i],tweetwords[j][0])
+            if score and score > best_score:
+                best_score = score
+                best_song = i
+    return best_song
