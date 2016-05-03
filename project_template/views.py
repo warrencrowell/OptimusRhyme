@@ -12,11 +12,17 @@ from wordswap import *
 import os
 
 ### Load corpus ###
-if os.path.isfile('dataset.json'):
-    json_data = open('dataset.json').read()
+if os.path.isfile('lyrics_dataset.json'):
+    json_data = open('lyrics_dataset.json').read()
 else:
-    json_data = open('project_template/dataset.json').read()
+    json_data = open('project_template/lyrics_dataset.json').read()
 lyrics = json.loads(json_data)
+
+if os.path.isfile('scores_dataset.json'):
+    json_data = open('scores_dataset.json').read()
+else:
+    json_data = open('project_template/scores_dataset.json').read()
+song_tfidf = json.loads(json_data)
 
 # Create your views here.
 def index(request):
@@ -39,13 +45,6 @@ def index(request):
             if len(tweetwords) == 0:
                 output_list = ['Not enough tweets are associated with the input hashtag(s). Please try again.']
             else:
-                ### Load corpus ###
-                if os.path.isfile('dataset.json'):
-                    json_data = open('dataset.json').read()
-                else:
-                    json_data = open('project_template/dataset.json').read()
-                lyrics = json.loads(json_data)
-
                 ### Generate lyrics
                 output_list = [replace_random_word(get_random_line(lyrics),tweetwords)]
                 for i in range(7):
@@ -77,19 +76,6 @@ def index(request):
             if len(word_frequencies) == 0:
                 output_list = ['Not enough tweets are associated with the input hashtag(s). Please try again.']
             else:
-                ### Load corpus ###
-                if os.path.isfile('lyrics_dataset.json'):
-                    json_data = open('lyrics_dataset.json').read()
-                else:
-                    json_data = open('project_template/lyrics_dataset.json').read()
-                lyrics = json.loads(json_data)
-
-                if os.path.isfile('scores_dataset.json'):
-                    json_data = open('scores_dataset.json').read()
-                else:
-                    json_data = open('project_template/scores_dataset.json').read()
-                song_tfidf = json.loads(json_data)
-
                 ### Generate lyrics
                 output_list = [wordswap(new_random_line(lyrics,song_tfidf),tweetwords)]
                 for i in range(7):
