@@ -57,6 +57,8 @@
                     <label for="fbutton"> Final </label>
             </div>
 
+            {% if algorithm == 'final' %}
+
             <br></br>
 
             <div style = "max-width: 950px">
@@ -97,6 +99,8 @@
                 </div>
             </div>
 
+            {% endif %}
+
         </form>
 
         <div class="form-inline global-search">
@@ -120,6 +124,8 @@
                 </span>
             </div> -->
         </div>
+        {% if word_cloud_list_1 != '' %}
+
         <div id="word_cloud_div">
             <h4 align="center"></h4>
            <!--
@@ -136,7 +142,6 @@
             <div id="word_cloud_3" align="center" class="float-left"></div>-->
         </div>
 
-        {% if output  %}
         {% load static from staticfiles %}
         <script src="http://d3js.org/d3.v3.min.js"></script>
         <script src="https://www.jasondavies.com/wordcloud/cloud.min.js"></script>

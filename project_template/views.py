@@ -30,6 +30,7 @@ def index(request):
     output=''
     search=''
     algorithm=''
+    word_cloud_list_1=''
     rhymeImportance=1
     syllableCountImportance=1
     posImportance=1
@@ -41,11 +42,23 @@ def index(request):
         search = request.GET.get('search')
         algorithm = request.GET.get('algorithm') # Either 'prototype' or 'final'
         rhymeImportance = request.GET.get('rhymeImportance')
+        if not rhymeImportance:
+            rhymeImportance = 1
         syllableCountImportance = request.GET.get('syllableCountImportance')
+        if not syllableCountImportance:
+            syllableCountImportance = 1
         posImportance = request.GET.get('posImportance')
+        if not posImportance:
+            posImportance = 1
         hashtagRelevance = request.GET.get('hashtagRelevance')
+        if not hashtagRelevance:
+            hashtagRelevance = 1
         lyricRelevance = request.GET.get('lyricRelevance')
+        if not lyricRelevance:
+            lyricRelevance = 1
         semanticSimilarity = request.GET.get('semanticSimilarity')
+        if not semanticSimilarity:
+            semanticSimilarity = 1
 
         ### Get tweet words ###
         hashtags = search.split()
@@ -78,6 +91,7 @@ def index(request):
                             'magic_url': request.get_full_path(),
                             'search': search,
                             'algorithm': algorithm,
+                            'word_cloud_list_1': word_cloud_list_1,
                             'rhymeImportance':rhymeImportance,
                             'syllableCountImportance':syllableCountImportance,
                             'posImportance':posImportance,
@@ -89,7 +103,7 @@ def index(request):
         elif algorithm == 'final':
             ### Get tweet words ###
             TM = TweetMining(method="tf_idf_new")
-            word_frequencies, tf = TM.get_topical_words(hashtags)
+            word_frequencies, word_cloud_list_1 = TM.get_topical_words(hashtags)
 
             if len(word_frequencies) == 0:
                 output_list = ['Not enough tweets are associated with the input hashtag(s). Please try again.']
@@ -114,7 +128,7 @@ def index(request):
                 return render_to_response('project_template/index.html',
                               {'output': output,
                                'magic_url': request.get_full_path(),
-                               'word_cloud_list_1': tf,
+                               'word_cloud_list_1': word_cloud_list_1,
                                'search': search,
                                'algorithm': algorithm,
                                'rhymeImportance':rhymeImportance,
@@ -138,6 +152,7 @@ def index(request):
                           {'output': output,
                            'magic_url': request.get_full_path(),
                            'search': search,
+                           'word_cloud_list_1': word_cloud_list_1,
                            'algorithm': algorithm,
                            'rhymeImportance':rhymeImportance,
                            'syllableCountImportance':syllableCountImportance,
