@@ -15,6 +15,21 @@
                 width:33%;
             }
         </style>
+        <script type="text/javascript">
+            window.onload = function() {
+                slidersHide();
+            }
+            function slidersHide() {
+                if (document.getElementById('pbutton').checked) {
+                    document.getElementById('sliders').style.display = 'none';
+                    document.getElementById('word_cloud_1').style.display = 'none';
+                }
+                else if(document.getElementById('fbutton').checked) {
+                    document.getElementById('sliders').style.display = 'block';
+                    document.getElementById('word_cloud_1').style.display = 'max-width: 950px';
+            }
+            }
+        </script>
     </head>
 
     <body>
@@ -38,30 +53,29 @@
 
                 {% if search == '' %}
                 <input id="input" type="text" name="search" class="form-control" placeholder="Input a hashtag or a list of hashtags to generate a relevant rap">
-                <!--<input id="input" type="text" name="search" class="form-control" placeholder="Your Input">-->
                 {% else %}
                 <input id="input" type="text" name="search" class="form-control" placeholder="{{ search }}" value="{{ search }}">
                 {% endif %}
+
             </div>
             <button type="submit" class="btn btn-info"> Go! </button>
 
             <br><br>
 
             <div style = "margin-right: 50px;">
-                <input type="radio" name="algorithm" value="prototype" id="pbutton" class="radio" {% if algorithm == 'prototype' %}checked{% endif %}/>
-                    <label for="pButton"> Prototype </label>
+                <input type="radio" name="algorithm" value="prototype" id="pbutton" onclick="javascript:slidersHide();" class="radio" {% if algorithm == 'prototype' %}checked{% endif %}/>
+                    <label for="pbutton"> Prototype </label>
             </div>
 
             <div style = "margin-left: 50px;">
-                <input type="radio" name="algorithm" value="final" id="fbutton" class="radio" {% if algorithm == '' or algorithm != 'prototype' %}checked{% endif %}/>
+                <input type="radio" name="algorithm" value="final" id="fbutton" onclick="javascript:slidersHide();" class="radio" {% if algorithm == '' or algorithm != 'prototype' %}checked{% endif %}/>
                     <label for="fbutton"> Final </label>
             </div>
 
-            {% if algorithm == 'final' %}
 
             <br></br>
-
-            <div style = "max-width: 950px">
+            <div id="sliders">
+            <div style = "max-width: 950px" >
                 <div style = "width: 270px; margin: 10px 20px;">
                     <center>Rhyme Importance</center><br>
                     <input type="range" name="rhymeImportance" id="rhymeInputId" value="{{ rhymeImportance }}" min="0" max="1" step="0.01" oninput="rhymeOutputId.value = rhymeInputId.value">
@@ -98,8 +112,7 @@
                     <output name="wordSubOutputName" id="wordSubOutputId">{{ semanticSimilarity }}</output>
                 </div>
             </div>
-
-            {% endif %}
+            </div>
 
         </form>
 
