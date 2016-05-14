@@ -12,23 +12,23 @@ from wordswap import *
 import os
 
 ### Load corpus ###
-if os.path.isfile('lyrics_dataset.json'):
-    json_data = open('lyrics_dataset.json').read()
-else:
-    json_data = open('project_template/lyrics_dataset.json').read()
-lyrics = json.loads(json_data)
+#if os.path.isfile('lyrics_dataset.json'):
+#    json_data = open('lyrics_dataset.json').read()
+#else:
+#    json_data = open('project_template/lyrics_dataset.json').read()
+#lyrics = json.loads(json_data)
 
 if os.path.isfile('scores_dataset.json'):
-    json_data = open('scores_dataset.json').read()
+    json_data = open('scores_dataset.json')
 else:
-    json_data = open('project_template/scores_dataset.json').read()
-song_tfidf = json.loads(json_data)
+    json_data = open('project_template/scores_dataset.json')
+song_tfidf = json.load(json_data)
 
 if os.path.isfile('topics.json'):
-    json_data = open('topics.json').read()
+    json_data = open('topics.json')
 else:
-    json_data = open('project_template/topics.json').read()
-topics = json.loads(json_data)
+    json_data = open('project_template/topics.json')
+topics = json.load(json_data)
 
 def consolidate_tfidf(tuple_list):
     tfidf_dict = {}
@@ -113,9 +113,9 @@ def index(request):
                 output_list = ['Not enough tweets are associated with the input hashtag(s). Please try again.']
             else:
                 ### Generate lyrics
-                output_list = [replace_random_word(get_random_line(lyrics),tweetwords)]
+                output_list = [replace_random_word(get_random_line(None),tweetwords)]
                 for i in range(7):
-                    line = get_random_line(lyrics, output_list[-1])
+                    line = get_random_line(None, output_list[-1])
                     altered_line = replace_random_word(line, tweetwords)
                     output_list.append(altered_line)
 
@@ -157,11 +157,13 @@ def index(request):
                 # lyrics_tfidf = [(rand_line[0][i], rand_line[1][i]) for i in range(len(rand_line[0]))]
                 # output_list = [wordswap(rand_line, word_frequencies,weights, num_swaps=swaps)]
                 # for i in range(7):
-                while True:
+                best_song = []
+                while len(best_song) < 7:
                     best_song_idx = pick_song_idx(topics, word_frequencies)
-                    if len(lyrics[best_song_idx]) > 7:
-                        break
-                best_song = lyrics[best_song_idx]
+                    if os.path.isfile('lyrics/song_%04d.json' % best_song_idx):
+                        best_song = json.load(open('lyrics/song_%04d.json' % best_song_idx))
+                    else:
+                        best_song = json.load(open('project_template/lyrics/song_%04d.json' % best_song_idx))
                 output_list = []
                 lyrics_tfidf = []
                 for i,line in enumerate(best_song):

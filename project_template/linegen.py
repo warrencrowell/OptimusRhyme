@@ -11,6 +11,11 @@ def is_explicit(line):
     return False
 
 def get_random_line(corpus, last_line = None):
+    if os.path.isfile('lyrics_dataset.json'):
+        json_data = open('lyrics_dataset.json')
+    else:
+        json_data = open('project_template/lyrics_dataset.json')
+    corpus = json.load(json_data)
     while True:
         song = random.choice(corpus)
         while len(song)<1:
@@ -23,7 +28,7 @@ def get_random_line(corpus, last_line = None):
         for i in range(len(line)):
             if 'NN' in pos[i][1]:
                 noun_found = True
-        if noun_found and not is_explicit(line): 
+        if noun_found and not is_explicit(line):
             if last_line:
                 if abs(len(last_line) - len(line)) <= 3:
                     break
@@ -42,7 +47,7 @@ def new_random_line(corpus, tf_idf, last_line = None):
         for i in range(len(line)):
             if 'NN' in pos[i][1]:
                 noun_found = True
-        if noun_found and not is_explicit(line): 
+        if noun_found and not is_explicit(line):
             if last_line:
                 if abs(len(last_line) - len(line)) <= 3:
                     break
